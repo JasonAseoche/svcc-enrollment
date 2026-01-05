@@ -1,0 +1,435 @@
+/* Academic Calendar Container */
+.svcc-acad-calendar-container {
+  background-color: #f9fafb;
+  min-height: 100vh;
+  padding: 1.5rem;
+}
+
+/* Header Section */
+.svcc-acad-calendar-header {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.svcc-acad-calendar-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #d10f0f;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .svcc-acad-calendar-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}
+
+/* Buttons */
+.svcc-acad-calendar-btn-primary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background-color: #d10f0f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.svcc-acad-calendar-btn-primary:hover {
+  background-color: #b00d0d;
+}
+
+.svcc-acad-calendar-btn-secondary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: white;
+  color: #d10f0f;
+  border: 1px solid #d10f0f;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.svcc-acad-calendar-btn-secondary:hover {
+  background-color: #d10f0f;
+  color: white;
+}
+
+.svcc-acad-calendar-btn-danger {
+  padding: 0.5rem 1rem;
+  background-color: white;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.svcc-acad-calendar-btn-danger:hover {
+  background-color: #fee;
+  color: #d10f0f;
+  border-color: #d10f0f;
+}
+
+.svcc-acad-calendar-btn-end-term {
+  width: 100%;
+  padding: 0.5rem;
+  background-color: white;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 0.75rem;
+}
+
+.svcc-acad-calendar-btn-end-term:hover {
+  background-color: #fee;
+  color: #d10f0f;
+  border-color: #d10f0f;
+}
+
+.svcc-acad-calendar-icon {
+  width: 1rem;
+  height: 1rem;
+  stroke-width: 2;
+}
+
+/* Content Area */
+.svcc-acad-calendar-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Year Card */
+.svcc-acad-calendar-year-card {
+  background-color: white;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.svcc-acad-calendar-year-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.svcc-acad-calendar-year-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.svcc-acad-calendar-year-info h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.svcc-acad-calendar-year-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* Badges */
+.svcc-acad-calendar-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.svcc-acad-calendar-badge-active {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.svcc-acad-calendar-badge-ended {
+  background-color: #f5f5f5;
+  color: #6b7280;
+}
+
+/* Terms Grid */
+.svcc-acad-calendar-terms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+/* Term Card */
+.svcc-acad-calendar-term-card {
+  background-color: #fafafa;
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  padding: 1rem;
+}
+
+.svcc-acad-calendar-term-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.svcc-acad-calendar-term-header h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.svcc-acad-calendar-term-dates {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.svcc-acad-calendar-date-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.svcc-acad-calendar-date-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.svcc-acad-calendar-date-value {
+  font-size: 0.875rem;
+  color: #1f2937;
+  font-weight: 500;
+}
+
+/* Empty State */
+.svcc-acad-calendar-empty {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: #9ca3af;
+}
+
+.svcc-acad-calendar-empty-icon {
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: 0.75rem;
+  stroke-width: 1.5;
+}
+
+.svcc-acad-calendar-empty p {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+/* Modal */
+.svcc-acad-calendar-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.svcc-acad-calendar-modal {
+  background-color: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.svcc-acad-calendar-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.svcc-acad-calendar-modal-header h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.svcc-acad-calendar-modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  color: #6b7280;
+  transition: color 0.2s;
+}
+
+.svcc-acad-calendar-modal-close:hover {
+  color: #d10f0f;
+}
+
+.svcc-acad-calendar-modal-close svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  stroke-width: 2;
+}
+
+/* Modal Form */
+.svcc-acad-calendar-modal-form {
+  padding: 1.5rem;
+}
+
+.svcc-acad-calendar-form-group {
+  margin-bottom: 1.25rem;
+}
+
+.svcc-acad-calendar-form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.svcc-acad-calendar-form-group input,
+.svcc-acad-calendar-form-group select {
+  width: 100%;
+  padding: 0.625rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  transition: border-color 0.2s;
+}
+
+.svcc-acad-calendar-form-group input:focus,
+.svcc-acad-calendar-form-group select:focus {
+  outline: none;
+  border-color: #d10f0f;
+}
+
+.svcc-acad-calendar-form-group small {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+/* Modal Actions */
+.svcc-acad-calendar-modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e5e5;
+}
+
+.svcc-acad-calendar-btn-cancel {
+  padding: 0.625rem 1.25rem;
+  background-color: white;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.svcc-acad-calendar-btn-cancel:hover {
+  background-color: #f9fafb;
+  color: #374151;
+}
+
+.svcc-acad-calendar-btn-submit {
+  padding: 0.625rem 1.25rem;
+  background-color: #d10f0f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.svcc-acad-calendar-btn-submit:hover {
+  background-color: #b00d0d;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .svcc-acad-calendar-container {
+    padding: 1rem;
+  }
+
+  .svcc-acad-calendar-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .svcc-acad-calendar-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .svcc-acad-calendar-year-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .svcc-acad-calendar-year-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .svcc-acad-calendar-btn-secondary,
+  .svcc-acad-calendar-btn-danger {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .svcc-acad-calendar-terms-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .svcc-acad-calendar-modal {
+    width: 95%;
+  }
+}
+
+

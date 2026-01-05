@@ -1,0 +1,209 @@
+.svcc-myschedule-container {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.svcc-myschedule-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 20px 24px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.svcc-myschedule-header-left {
+  flex: 1;
+}
+
+.svcc-myschedule-term-select {
+  padding: 10px 16px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  background-color: #ffffff;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+  min-width: 220px;
+}
+
+.svcc-myschedule-term-select:hover {
+  border-color: #d10f0f;
+}
+
+.svcc-myschedule-term-select:focus {
+  border-color: #d10f0f;
+  box-shadow: 0 0 0 3px rgba(209, 15, 15, 0.1);
+}
+
+.svcc-myschedule-header-right {
+  display: flex;
+  align-items: center;
+}
+
+.svcc-myschedule-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #f8f8f8;
+  padding: 10px 16px;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+}
+
+.svcc-myschedule-section-icon {
+  color: #d10f0f;
+}
+
+.svcc-myschedule-section-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+}
+
+.svcc-myschedule-days-container {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.svcc-myschedule-day-btn {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  background-color: #ffffff;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.svcc-myschedule-day-btn:hover {
+  border-color: #d10f0f;
+  color: #d10f0f;
+}
+
+.svcc-myschedule-day-btn.active {
+  background-color: #d10f0f;
+  border-color: #d10f0f;
+  color: #ffffff;
+}
+
+.svcc-myschedule-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.svcc-myschedule-table-container {
+  overflow-x: auto;
+}
+
+.svcc-myschedule-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.svcc-myschedule-table thead {
+  background-color: #f8f8f8;
+}
+
+.svcc-myschedule-table th {
+  padding: 16px 20px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.svcc-myschedule-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.svcc-myschedule-table tbody tr:hover {
+  background-color: #fafafa;
+}
+
+.svcc-myschedule-table td {
+  padding: 16px 20px;
+  font-size: 14px;
+  color: #555;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.svcc-myschedule-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.svcc-myschedule-no-data {
+  text-align: center;
+  color: #999;
+  font-style: italic;
+  padding: 40px 20px !important;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .svcc-myschedule-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .svcc-myschedule-header-right {
+    justify-content: flex-end;
+  }
+
+  .svcc-myschedule-term-select {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .svcc-myschedule-container {
+    padding: 16px;
+  }
+
+  .svcc-myschedule-header {
+    padding: 16px;
+  }
+
+  .svcc-myschedule-days-container {
+    gap: 8px;
+  }
+
+  .svcc-myschedule-day-btn {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+
+  .svcc-myschedule-table th,
+  .svcc-myschedule-table td {
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 640px) {
+  .svcc-myschedule-table th,
+  .svcc-myschedule-table td {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+
+  .svcc-myschedule-day-btn {
+    flex: 1;
+    min-width: calc(50% - 4px);
+  }
+}

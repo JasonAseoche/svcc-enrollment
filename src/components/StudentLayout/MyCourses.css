@@ -1,0 +1,280 @@
+.svcc-mycourses-container {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.svcc-mycourses-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 20px 24px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.svcc-mycourses-header-left {
+  flex: 1;
+}
+
+.svcc-mycourses-select {
+  padding: 10px 16px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  background-color: #ffffff;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+  min-width: 220px;
+}
+
+.svcc-mycourses-select:hover {
+  border-color: #d10f0f;
+}
+
+.svcc-mycourses-select:focus {
+  border-color: #d10f0f;
+  box-shadow: 0 0 0 3px rgba(209, 15, 15, 0.1);
+}
+
+.svcc-mycourses-header-right {
+  display: flex;
+  align-items: center;
+  max-width: 500px;
+}
+
+.svcc-mycourses-program {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #f8f8f8;
+  padding: 10px 16px;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+}
+
+.svcc-mycourses-program-icon {
+  color: #d10f0f;
+  flex-shrink: 0;
+}
+
+.svcc-mycourses-program-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.svcc-mycourses-legend {
+  display: flex;
+  gap: 24px;
+  background-color: #ffffff;
+  padding: 16px 24px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.svcc-mycourses-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.svcc-mycourses-legend-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.svcc-mycourses-legend-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+}
+
+.svcc-mycourses-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.svcc-mycourses-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.svcc-mycourses-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.svcc-mycourses-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  gap: 16px;
+}
+
+.svcc-mycourses-card-title {
+  flex: 1;
+}
+
+.svcc-mycourses-code {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #d10f0f;
+  background-color: rgba(209, 15, 15, 0.1);
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+.svcc-mycourses-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+  margin: 6px 0 0 0;
+}
+
+.svcc-mycourses-status-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.svcc-mycourses-status-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.svcc-mycourses-card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.svcc-mycourses-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.svcc-mycourses-prereq {
+  grid-column: span 2;
+}
+
+.svcc-mycourses-info-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #666;
+}
+
+.svcc-mycourses-info-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .svcc-mycourses-list {
+    grid-template-columns: 1fr;
+  }
+
+  .svcc-mycourses-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .svcc-mycourses-header-right {
+    max-width: 100%;
+  }
+
+  .svcc-mycourses-select {
+    width: 100%;
+  }
+
+  .svcc-mycourses-program {
+    width: 100%;
+  }
+
+  .svcc-mycourses-card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .svcc-mycourses-prereq {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .svcc-mycourses-container {
+    padding: 16px;
+  }
+
+  .svcc-mycourses-header {
+    padding: 16px;
+  }
+
+  .svcc-mycourses-legend {
+    padding: 12px 16px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .svcc-mycourses-card {
+    padding: 16px;
+  }
+
+  .svcc-mycourses-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .svcc-mycourses-status-badge {
+    align-self: flex-start;
+  }
+
+  .svcc-mycourses-name {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 640px) {
+  .svcc-mycourses-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .svcc-mycourses-prereq {
+    grid-column: span 1;
+  }
+
+  .svcc-mycourses-program-text {
+    font-size: 12px;
+  }
+
+  .svcc-mycourses-legend {
+    gap: 12px;
+  }
+
+  .svcc-mycourses-legend-text {
+    font-size: 13px;
+  }
+}

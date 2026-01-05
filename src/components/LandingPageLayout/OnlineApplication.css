@@ -1,0 +1,660 @@
+/* Online Application Container */
+.svcc-application-container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding: 2rem 1rem;
+}
+
+.svcc-application-content-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+/* Step Progress Sidebar */
+.svcc-application-steps-sidebar {
+  flex: 0 0 280px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 2rem 1.5rem;
+  position: sticky;
+  top: 100px;
+}
+
+.svcc-application-steps-title {
+  font-size: 1.25rem;
+  color: #1a1a1a;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #d10f0f;
+}
+
+.svcc-application-steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.svcc-application-step-item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem 0;
+}
+
+.svcc-application-step-number {
+  flex: 0 0 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  color: #999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  z-index: 2;
+}
+
+.svcc-application-step-content {
+  flex: 1;
+  padding-top: 0.5rem;
+}
+
+.svcc-application-step-title {
+  font-size: 0.9375rem;
+  color: #666;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.svcc-application-step-line {
+  position: absolute;
+  left: 19px;
+  top: 60px;
+  width: 2px;
+  height: calc(100% - 20px);
+  background: #e0e0e0;
+  z-index: 1;
+}
+
+/* Active Step */
+.svcc-application-step-item.active .svcc-application-step-number {
+  background: #d10f0f;
+  color: white;
+}
+
+.svcc-application-step-item.active .svcc-application-step-title {
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+/* Completed Step */
+.svcc-application-step-item.completed .svcc-application-step-number {
+  background: #4caf50;
+  color: white;
+}
+
+.svcc-application-step-item.completed .svcc-application-step-title {
+  color: #4caf50;
+}
+
+.svcc-application-step-item.completed .svcc-application-step-line {
+  background: #4caf50;
+}
+
+/* Main Content Area */
+.svcc-application-main-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.svcc-application-wrapper {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem;
+}
+
+/* Header */
+.svcc-application-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #d10f0f;
+}
+
+.svcc-application-icon {
+  width: 32px;
+  height: 32px;
+  color: #d10f0f;
+  flex-shrink: 0;
+}
+
+.svcc-application-title {
+  font-size: 1.75rem;
+  color: #1a1a1a;
+  margin: 0;
+  font-weight: 600;
+}
+
+.svcc-application-subtitle {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+/* Student Type Selection */
+.svcc-application-student-type-section {
+  max-width: 700px;
+  margin: 2rem auto;
+}
+
+.svcc-application-question {
+  font-size: 1.25rem;
+  color: #1a1a1a;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.svcc-application-radio-group {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.svcc-application-radio-option {
+  flex: 1;
+  padding: 1.5rem;
+  border: 2px solid #d1d5db;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.svcc-application-radio-option:hover {
+  border-color: #d10f0f;
+  background: #fef2f2;
+}
+
+.svcc-application-radio-option.selected {
+  border-color: #d10f0f;
+  background: #fef2f2;
+}
+
+.svcc-application-radio-option input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #d10f0f;
+}
+
+.svcc-application-radio-option span {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+/* Form */
+.svcc-application-form {
+  margin-top: 1.5rem;
+}
+
+.svcc-application-helper-text {
+  color: #999;
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
+/* Section */
+.svcc-application-section {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #fafafa;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+}
+
+.svcc-application-section-title {
+  font-size: 1.125rem;
+  color: #1a1a1a;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #d10f0f;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.svcc-application-note {
+  font-size: 0.8125rem;
+  color: #666;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.svcc-application-subsection-title {
+  font-size: 1rem;
+  color: #1a1a1a;
+  margin: 1.5rem 0 1rem 0;
+  font-weight: 600;
+  padding-left: 0.75rem;
+  border-left: 3px solid #d10f0f;
+}
+
+/* Row and Fields */
+.svcc-application-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.svcc-application-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.svcc-application-field-small {
+  grid-column: span 1;
+  min-width: 100px;
+}
+
+.svcc-application-field label {
+  font-size: 0.875rem;
+  color: #333;
+  font-weight: 500;
+}
+
+.svcc-application-field .required {
+  color: #d10f0f;
+}
+
+.svcc-application-field input,
+.svcc-application-field select {
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 0.9375rem;
+  transition: border-color 0.2s ease;
+  background: white;
+  color: #1a1a1a;
+}
+
+.svcc-application-field input:focus,
+.svcc-application-field select:focus {
+  outline: none;
+  border-color: #d10f0f;
+  box-shadow: 0 0 0 3px rgba(209, 15, 15, 0.1);
+}
+
+.svcc-application-field input:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+  color: #999;
+}
+
+.svcc-application-field input::placeholder {
+  color: #9ca3af;
+}
+
+.svcc-application-field select {
+  cursor: pointer;
+}
+
+/* Checkbox */
+.svcc-application-checkbox-wrapper {
+  margin-bottom: 1.25rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 4px;
+  border: 1px solid #e0e0e0;
+}
+
+.svcc-application-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  font-size: 0.9375rem;
+  color: #333;
+  font-weight: 500;
+}
+
+.svcc-application-checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #d10f0f;
+}
+
+/* Navigation Buttons */
+.svcc-application-navigation {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid #e0e0e0;
+}
+
+.svcc-application-btn {
+  padding: 0.875rem 2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.svcc-application-btn-back {
+  background: #f5f5f5;
+  color: #666;
+  border: 1px solid #d1d5db;
+}
+
+.svcc-application-btn-back:hover {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.svcc-application-btn-next {
+  background: #d10f0f;
+  color: white;
+}
+
+.svcc-application-btn-next:hover {
+  background: #b00d0d;
+}
+
+.svcc-application-btn-submit {
+  background: #4caf50;
+  color: white;
+}
+
+.svcc-application-btn-submit:hover {
+  background: #45a049;
+}
+
+/* Validation Section */
+.svcc-application-validation {
+  margin-top: 1.5rem;
+}
+
+.svcc-application-validation-title {
+  font-size: 1.5rem;
+  color: #1a1a1a;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.svcc-application-review-section {
+  background: #fafafa;
+  border-radius: 6px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #e0e0e0;
+}
+
+.svcc-application-review-section h3 {
+  font-size: 1.125rem;
+  color: #1a1a1a;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #d10f0f;
+  font-weight: 600;
+}
+
+.svcc-application-review-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.svcc-application-review-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.svcc-application-review-item .label {
+  font-size: 0.875rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.svcc-application-review-item .value {
+  font-size: 0.9375rem;
+  color: #1a1a1a;
+  padding: 0.75rem;
+  background: white;
+  border-radius: 4px;
+  border: 1px solid #d1d5db;
+}
+
+.svcc-application-notice {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 4px;
+  padding: 1rem;
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.svcc-application-notice p {
+  margin: 0;
+  color: #856404;
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+/* Submit Section */
+.svcc-application-submit {
+  text-align: center;
+  max-width: 700px;
+  margin: 2rem auto;
+}
+
+.svcc-application-submit-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #4caf50;
+  color: white;
+  font-size: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+}
+
+.svcc-application-submit h2 {
+  font-size: 1.75rem;
+  color: #1a1a1a;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.svcc-application-submit-message {
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.svcc-application-checklist {
+  background: #fafafa;
+  border-radius: 6px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  text-align: left;
+  border: 1px solid #e0e0e0;
+}
+
+.svcc-application-checklist h3 {
+  color: #1a1a1a;
+  font-size: 1.125rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.svcc-application-checklist ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.svcc-application-checklist li {
+  padding: 0.5rem 0;
+  font-size: 0.9375rem;
+  color: #4caf50;
+  font-weight: 500;
+}
+
+.svcc-application-terms {
+  background: white;
+  border: 2px solid #d10f0f;
+  border-radius: 4px;
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+  text-align: left;
+}
+
+.svcc-application-terms label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.9375rem;
+  color: #333;
+  line-height: 1.6;
+  cursor: pointer;
+}
+
+.svcc-application-terms input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #d10f0f;
+  margin-top: 0.125rem;
+  flex-shrink: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .svcc-application-steps-sidebar {
+    flex: 0 0 240px;
+  }
+}
+
+@media (max-width: 768px) {
+  .svcc-application-container {
+    padding: 1rem 0.5rem;
+  }
+
+  .svcc-application-content-wrapper {
+    flex-direction: column;
+  }
+
+  .svcc-application-steps-sidebar {
+    flex: 1;
+    width: 100%;
+    position: relative;
+    top: 0;
+    padding: 1.5rem 1rem;
+  }
+
+  .svcc-application-steps-list {
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 0.75rem;
+  }
+
+  .svcc-application-step-item {
+    flex-direction: column;
+    align-items: center;
+    min-width: 90px;
+    padding: 0.75rem;
+  }
+
+  .svcc-application-step-content {
+    text-align: center;
+  }
+
+  .svcc-application-step-title {
+    font-size: 0.8125rem;
+  }
+
+  .svcc-application-step-line {
+    display: none;
+  }
+
+  .svcc-application-wrapper {
+    padding: 1.5rem 1rem;
+  }
+
+  .svcc-application-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .svcc-application-title {
+    font-size: 1.5rem;
+  }
+
+  .svcc-application-subtitle {
+    font-size: 0.9375rem;
+  }
+
+  .svcc-application-radio-group {
+    flex-direction: column;
+  }
+
+  .svcc-application-section {
+    padding: 1.25rem 1rem;
+  }
+
+  .svcc-application-row {
+    grid-template-columns: 1fr;
+  }
+
+  .svcc-application-navigation {
+    flex-direction: column;
+  }
+
+  .svcc-application-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .svcc-application-title {
+    font-size: 1.25rem;
+  }
+
+  .svcc-application-question {
+    font-size: 1.125rem;
+  }
+}

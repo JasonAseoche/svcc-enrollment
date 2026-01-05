@@ -1,0 +1,177 @@
+/* ExistEnroll.css */
+
+.svcc-exist-enroll-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background-color: #f5f5f5;
+}
+
+.svcc-exist-enroll-wrapper {
+  width: 100%;
+  max-width: 900px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem;
+}
+
+.svcc-exist-enroll-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #d10f0f;
+}
+
+.svcc-exist-enroll-icon {
+  width: 32px;
+  height: 32px;
+  color: #d10f0f;
+  flex-shrink: 0;
+}
+
+.svcc-exist-enroll-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+.svcc-exist-enroll-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.svcc-exist-enroll-row{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.svcc-exist-enroll-row-term{
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.svcc-exist-enroll-row-names {
+  grid-template-columns: 1fr 1fr 1fr 0.7fr;
+}
+
+.svcc-exist-enroll-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.svcc-exist-enroll-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #333333;
+}
+
+.svcc-exist-enroll-required {
+  color: #d10f0f;
+}
+
+.svcc-exist-enroll-input,
+.svcc-exist-enroll-select {
+  padding: 0.75rem;
+  font-size: 0.9375rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background-color: #ffffff;
+  color: #1a1a1a;
+  transition: border-color 0.2s ease;
+}
+
+.svcc-exist-enroll-input:focus,
+.svcc-exist-enroll-select:focus {
+  outline: none;
+  border-color: #d10f0f;
+  box-shadow: 0 0 0 3px rgba(209, 15, 15, 0.1);
+}
+
+.svcc-exist-enroll-input::placeholder {
+  color: #9ca3af;
+}
+
+.svcc-exist-enroll-select {
+  cursor: pointer;
+}
+
+.svcc-exist-enroll-submit-wrapper {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.svcc-exist-enroll-submit-btn {
+  padding: 0.875rem 2rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #ffffff;
+  background-color: #d10f0f;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.svcc-exist-enroll-submit-btn:hover {
+  background-color: #b00d0d;
+}
+
+.svcc-exist-enroll-submit-btn:active {
+  transform: scale(0.98);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .svcc-exist-enroll-wrapper {
+    padding: 1.5rem;
+  }
+
+  .svcc-exist-enroll-title {
+    font-size: 1.5rem;
+  }
+
+  .svcc-exist-enroll-row {
+    grid-template-columns: 1fr;
+  }
+
+  .svcc-exist-enroll-row-names {
+    grid-template-columns: 1fr;
+  }
+
+  .svcc-exist-enroll-submit-wrapper {
+    justify-content: stretch;
+  }
+
+  .svcc-exist-enroll-submit-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .svcc-exist-enroll-container {
+    padding: 1rem 0.5rem;
+  }
+
+  .svcc-exist-enroll-wrapper {
+    padding: 1.25rem;
+  }
+
+  .svcc-exist-enroll-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .svcc-exist-enroll-title {
+    font-size: 1.25rem;
+  }
+}

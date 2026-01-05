@@ -1,0 +1,263 @@
+.svcc-mygrades-container {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.svcc-mygrades-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 20px 24px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 24px;
+}
+
+.svcc-mygrades-header-left {
+  flex: 1;
+}
+
+.svcc-mygrades-term-select {
+  padding: 10px 16px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #333;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  background-color: #ffffff;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s ease;
+  min-width: 220px;
+}
+
+.svcc-mygrades-term-select:hover {
+  border-color: #d10f0f;
+}
+
+.svcc-mygrades-term-select:focus {
+  border-color: #d10f0f;
+  box-shadow: 0 0 0 3px rgba(209, 15, 15, 0.1);
+}
+
+.svcc-mygrades-header-right {
+  display: flex;
+  gap: 32px;
+}
+
+.svcc-mygrades-gwa-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.svcc-mygrades-gwa-label {
+  font-size: 13px;
+  color: #666;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.svcc-mygrades-gwa-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #d10f0f;
+}
+
+.svcc-mygrades-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.svcc-mygrades-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.svcc-mygrades-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.svcc-mygrades-card-header {
+  margin-bottom: 16px;
+}
+
+.svcc-mygrades-course-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #d10f0f;
+  margin: 0 0 6px 0;
+}
+
+.svcc-mygrades-instructor {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.svcc-mygrades-divider {
+  height: 1px;
+  background-color: #e0e0e0;
+  margin: 16px 0;
+}
+
+.svcc-mygrades-grades-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.svcc-mygrades-grade-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.svcc-mygrades-grade-label {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.svcc-mygrades-grade-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+}
+
+.svcc-mygrades-final-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+}
+.svcc-mygrades-final-label {
+  font-size: 14px;
+  border-radius: 3px;
+  padding: 1.5px 5px;
+  background-color: #d10f0f;
+  font-weight: 600;
+  color: white;
+}
+
+.svcc-mygrades-final-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #d10f0f;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .svcc-mygrades-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .svcc-mygrades-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .svcc-mygrades-header-right {
+    justify-content: space-between;
+  }
+
+  .svcc-mygrades-gwa-item {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 640px) {
+  .svcc-mygrades-container {
+    padding: 16px;
+  }
+
+  .svcc-mygrades-header {
+    padding: 16px;
+  }
+
+  .svcc-mygrades-term-select {
+    width: 100%;
+  }
+
+  .svcc-mygrades-grades-row {
+    gap: 8px;
+  }
+
+  .svcc-mygrades-grade-label {
+    font-size: 11px;
+  }
+
+  .svcc-mygrades-grade-value {
+    font-size: 18px;
+  }
+
+  .svcc-mygrades-course-name {
+    font-size: 16px;
+  }
+}
+
+.svcc-mygrades-system-card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-top: 24px;
+}
+
+.svcc-mygrades-system-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+  margin: 0 0 20px 0;
+}
+
+.svcc-mygrades-system-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px 24px;
+}
+
+.svcc-mygrades-system-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #444;
+}
+
+.svcc-mygrades-star {
+  color: #666;
+  flex-shrink: 0;
+}
+
+@media (max-width: 1024px) {
+  .svcc-mygrades-system-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .svcc-mygrades-system-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .svcc-mygrades-system-card {
+    padding: 16px;
+  }
+
+  .svcc-mygrades-system-item {
+    font-size: 13px;
+  }
+}
