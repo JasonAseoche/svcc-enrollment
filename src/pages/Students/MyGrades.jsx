@@ -117,82 +117,82 @@ const MyGrades = () => {
       </div>
 
       <div className="svcc-mygrades-system-card">
-        <h3 className="svcc-mygrades-system-title">Grading System:</h3>
+        <h3 className="svcc-mygrades-system-title">Percentage Equivalent:</h3>
         <div className="svcc-mygrades-system-grid">
           <div className="svcc-mygrades-system-item">
             <svg className="svcc-mygrades-star" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
             </svg>
-            <span>97.50 - 100% (1.00) Excellent</span>
+            <span>98-100 (1.00)</span>
           </div>
           <div className="svcc-mygrades-system-item">
             <svg className="svcc-mygrades-star" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
             </svg>
-            <span>81.50 - 86.49% (2.00) Satisfactory</span>
+            <span>88-86 (2.00)</span>
           </div>
           <div className="svcc-mygrades-system-item">
             <svg className="svcc-mygrades-star" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
             </svg>
-            <span>59.50 - 64.99% (3.00) Fair</span>
-          </div>
-          
-          <div className="svcc-mygrades-system-item">
-            <svg className="svcc-mygrades-star" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-            </svg>
-            <span>94.50 - 97.49% (1.25) Very Good</span>
-          </div>
-          <div className="svcc-mygrades-system-item">
-            <svg className="svcc-mygrades-star" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-            </svg>
-            <span>76.00 - 81.49% (2.25) Satisfactory</span>
-          </div>
-          <div className="svcc-mygrades-system-item">
-            <svg className="svcc-mygrades-star" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-            </svg>
-            <span>59.49 % and below (5.00) Failed</span>
+            <span>75 (3.00)</span>
           </div>
           
           <div className="svcc-mygrades-system-item">
             <svg className="svcc-mygrades-star" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
             </svg>
-            <span>91.50 - 94.49% (1.50) Very Good</span>
+            <span>97-95 (1.25)</span>
           </div>
           <div className="svcc-mygrades-system-item">
             <svg className="svcc-mygrades-star" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
             </svg>
-            <span>70.50 - 75.99% (2.50) Satisfactory</span>
+            <span>85-83 (2.25)</span>
           </div>
           <div className="svcc-mygrades-system-item">
             <svg className="svcc-mygrades-star" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
             </svg>
-            <span>Dropped (DRP) Officially Dropped</span>
+            <span>74-0 (Failed)</span>
           </div>
           
           <div className="svcc-mygrades-system-item">
             <svg className="svcc-mygrades-star" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
             </svg>
-            <span>86.50 - 91.49% (1.75) Very Good</span>
+            <span>94-92 (1.50)</span>
           </div>
           <div className="svcc-mygrades-system-item">
             <svg className="svcc-mygrades-star" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
             </svg>
-            <span>65.00 - 70.49% (2.75) Fair</span>
+            <span>82-80 (2.50)</span>
           </div>
           <div className="svcc-mygrades-system-item">
             <svg className="svcc-mygrades-star" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
             </svg>
-            <span>Incomplete (INC) Incomplete Requirements</span>
+            <span>Dropped (DRP)</span>
+          </div>
+          
+          <div className="svcc-mygrades-system-item">
+            <svg className="svcc-mygrades-star" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
+            <span>91-89 (1.75)</span>
+          </div>
+          <div className="svcc-mygrades-system-item">
+            <svg className="svcc-mygrades-star" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
+            <span>79-76 (2.75)</span>
+          </div>
+          <div className="svcc-mygrades-system-item">
+            <svg className="svcc-mygrades-star" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
+            <span>Incomplete (INC)</span>
           </div>
         </div>
       </div>
