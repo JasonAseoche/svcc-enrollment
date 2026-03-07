@@ -1,0 +1,710 @@
+/* Advising.css - Program Head - Red Theme */
+
+* { box-sizing: border-box; }
+
+.head-advising-container {
+  background-color: #f9fafb;
+  min-height: 100vh;
+  padding: 1.5rem;
+}
+
+/* HEADER */
+.head-advising-header-card {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.head-advising-header-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .head-advising-header-content {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.head-advising-title-with-back {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.head-advising-back-btn {
+  background: none;
+  border: none;
+  color: #d10f0f;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.head-advising-back-btn:hover {
+  background-color: #fee2e2;
+}
+
+.head-advising-page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #d10f0f;
+  margin: 0;
+}
+
+.head-advising-subtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0.25rem 0 0 0;
+}
+
+.head-advising-header-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.head-advising-search-wrapper {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.head-advising-search-container {
+  position: relative;
+  width: 100%;
+}
+
+.head-advising-search-input {
+  padding: 0.5rem 2.5rem 0.5rem 2.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db;
+  width: 100%;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.head-advising-search-input:focus {
+  border-color: #d10f0f;
+  box-shadow: 0 0 0 3px rgba(209, 15, 15, 0.1);
+}
+
+.head-advising-search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 0.75rem;
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+.head-advising-search-clear {
+  position: absolute;
+  right: 0.75rem;
+  top: 0.75rem;
+  color: #9ca3af;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.head-advising-filters {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.head-advising-dropdown-container {
+  position: relative;
+}
+
+.head-advising-filter-select {
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  background-color: white;
+  color: #374151;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.2s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23374151' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  min-width: 120px;
+}
+
+.head-advising-filter-select:hover {
+  border-color: #9ca3af;
+}
+
+.head-advising-filter-select:focus {
+  border-color: #d10f0f;
+  box-shadow: 0 0 0 3px rgba(209, 15, 15, 0.1);
+}
+
+.head-advising-batch-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #d10f0f;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.head-advising-batch-btn:hover {
+  background-color: #a80c0c;
+}
+
+/* MESSAGE */
+.head-advising-message {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.head-advising-message-success {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.head-advising-message-error {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+
+/* TABLE */
+.head-advising-table-container {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+}
+
+.head-advising-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.head-advising-table thead {
+  background-color: #f9fafb;
+}
+
+.head-advising-table th {
+  padding: 1rem;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.head-advising-table tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.2s;
+}
+
+.head-advising-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.head-advising-table td {
+  padding: 1rem;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.head-advising-empty {
+  text-align: center;
+  padding: 2rem !important;
+  color: #6b7280;
+}
+
+.head-advising-gwa {
+  font-weight: 700;
+  color: #d10f0f;
+}
+
+.head-advising-evaluation {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.head-advising-evaluation.passed {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.head-advising-evaluation.not-passed {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+/* Badge styles */
+.head-advising-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.head-advising-badge-success {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.head-advising-badge-danger {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+.head-advising-badge-warning {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.head-advising-badge-waiting {
+  background: #f3f4f6;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.head-advising-badge-enrolled {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Table Action Buttons */
+.head-advising-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.head-advising-table-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #d1d5db;
+  background-color: white;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  color: #374151;
+}
+
+.head-advising-table-action-btn:hover {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.head-advising-table-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.head-advising-view-btn {
+  border-color: #d10f0f;
+  color: #d10f0f;
+}
+
+.head-advising-view-btn:hover:not(:disabled) {
+  background-color: #fee2e2;
+  border-color: #d10f0f;
+}
+
+.head-advising-approve-btn {
+  border-color: #16a34a;
+  color: #16a34a;
+}
+
+.head-advising-approve-btn:hover:not(:disabled) {
+  background-color: #dcfce7;
+  border-color: #16a34a;
+}
+
+.head-advising-reject-btn {
+  border-color: #dc2626;
+  color: #dc2626;
+}
+
+.head-advising-reject-btn:hover:not(:disabled) {
+  background-color: #fee2e2;
+  border-color: #dc2626;
+}
+
+/* Info Card */
+.head-advising-info-card {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.head-advising-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.head-advising-info-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.head-advising-info-value {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+/* Year Filter Buttons */
+.head-advising-year-filter {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.head-advising-year-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid #d1d5db;
+  background-color: white;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  transition: all 0.2s;
+}
+
+.head-advising-year-btn:hover {
+  border-color: #d10f0f;
+  color: #d10f0f;
+}
+
+.head-advising-year-btn.active {
+  background-color: #d10f0f;
+  color: white;
+  border-color: #d10f0f;
+}
+
+/* Year Section */
+.head-advising-year-section {
+  margin-bottom: 2rem;
+}
+
+.head-advising-year-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.head-advising-grade-pass {
+  color: #16a34a;
+  font-weight: 700;
+}
+
+.head-advising-grade-fail {
+  color: #dc2626;
+  font-weight: 700;
+}
+
+.head-advising-message-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.head-advising-message-close:hover {
+  opacity: 0.7;
+}
+
+/* GRADES VIEW */
+.head-advising-year-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #d10f0f;
+}
+
+.head-advising-year-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+}
+
+.head-advising-year-gwa {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #d10f0f;
+}
+
+.head-advising-receipt-link {
+  color: #d10f0f;
+  text-decoration: underline;
+  font-size: 0.875rem;
+}
+
+.head-advising-grade-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+/* Loading */
+.head-advising-loading {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+}
+
+/* No data */
+.head-advising-no-data {
+  text-align: center;
+  padding: 2rem !important;
+  color: #6b7280;
+}
+
+/* MODALS */
+.head-advising-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 9999;
+}
+
+.head-advising-modal {
+  background-color: white;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  max-width: 28rem;
+  width: 100%;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.head-advising-modal-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 0.5rem 0;
+}
+
+.head-advising-modal-text {
+  color: #6b7280;
+  margin: 0 0 1rem 0;
+  font-size: 0.875rem;
+}
+
+.head-advising-form-group {
+  margin-bottom: 1rem;
+}
+
+.head-advising-form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.head-advising-form-select,
+.head-advising-form-textarea {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  outline: none;
+  font-family: inherit;
+}
+
+.head-advising-form-select:focus,
+.head-advising-form-textarea:focus {
+  border-color: #d10f0f;
+  box-shadow: 0 0 0 3px rgba(209, 15, 15, 0.1);
+}
+
+.head-advising-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.head-advising-btn-primary,
+.head-advising-btn-secondary,
+.head-advising-btn-danger {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.head-advising-btn-primary {
+  background-color: #d10f0f;
+  color: white;
+}
+
+.head-advising-btn-primary:hover {
+  background-color: #a80c0c;
+}
+
+.head-advising-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.head-advising-btn-secondary {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.head-advising-btn-secondary:hover {
+  background-color: #e5e7eb;
+}
+
+.head-advising-btn-danger {
+  background-color: #dc2626;
+  color: white;
+}
+
+.head-advising-btn-danger:hover {
+  background-color: #b91c1c;
+}
+
+.head-advising-btn-danger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Adviser column badge */
+.head-advising-adviser-badge {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* RESPONSIVE */
+@media (max-width: 767px) {
+  .head-advising-container {
+    padding: 1rem;
+  }
+
+  .head-advising-page-title {
+    font-size: 1.5rem;
+  }
+
+  .head-advising-table {
+    display: block;
+  }
+
+  .head-advising-table thead {
+    display: none;
+  }
+
+  .head-advising-table tbody,
+  .head-advising-table tr,
+  .head-advising-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .head-advising-table tr {
+    margin-bottom: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1rem;
+  }
+
+  .head-advising-table td {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f3f4f6;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .head-advising-table td:before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #6b7280;
+  }
+
+  .head-advising-table td:last-child {
+    border-bottom: none;
+  }
+
+  .head-advising-modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .head-advising-btn-primary,
+  .head-advising-btn-secondary,
+  .head-advising-btn-danger {
+    width: 100%;
+  }
+}

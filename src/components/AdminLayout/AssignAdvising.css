@@ -1,0 +1,750 @@
+/* AssignAdvising.css - Matching ManageInstructors Design System */
+
+/* Base styles */
+* {
+  box-sizing: border-box;
+}
+
+/* Container styles */
+.svcc-assign-advising-container {
+  background-color: #f9fafb;
+  min-height: 100vh;
+  padding: 1.5rem;
+  will-change: auto;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  contain: layout style;
+}
+
+/* Header styles */
+.svcc-assign-advising-header-card {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.svcc-assign-advising-header-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .svcc-assign-advising-header-content {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.svcc-assign-advising-page-title {
+  font-size: 2.0rem;
+  font-weight: 700;
+  color: #d10f0f;
+  margin: 0;
+}
+
+.svcc-assign-advising-header-actions {
+  display: flex;
+  flex-direction: column;
+  margin-top: 25px;
+  gap: 1rem;
+  margin-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .svcc-assign-advising-header-actions {
+    flex-direction: row;
+  }
+}
+
+/* Search styles */
+.svcc-assign-advising-search-container {
+  position: relative;
+}
+
+.svcc-assign-advising-search-input {
+  padding: 0.500rem 2.1rem 0.500rem 2.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db;
+  width: 100%;
+  min-width: 400px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.svcc-assign-advising-search-input:focus {
+  border-color: #d10f0f;
+  box-shadow: 0 0 0 3px rgba(209, 15, 15, 0.1);
+}
+
+.svcc-assign-advising-search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 0.75rem;
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+.svcc-assign-advising-search-clear {
+  position: absolute;
+  right: 0.75rem;
+  top: 0.75rem;
+  color: #9ca3af;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.svcc-assign-advising-search-clear:hover {
+  color: #6b7280;
+}
+
+/* Message styles */
+.svcc-assign-advising-message {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: flex-start;
+}
+
+.svcc-assign-advising-message-success {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.svcc-assign-advising-message-error {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+
+.svcc-assign-advising-message-icon {
+  margin-right: 0.5rem;
+  margin-top: 0.125rem;
+  flex-shrink: 0;
+}
+
+/* Table container styles */
+.svcc-assign-advising-table-container {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  overflow: visible;
+  width: 100%;
+  position: relative;
+  min-height: 200px;
+  transform: translateZ(0);
+}
+
+/* Loading styles */
+.svcc-assign-advising-loading-container {
+  padding: 2rem;
+  text-align: center;
+}
+
+.svcc-assign-advising-loading-spinner {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  border: 4px solid #d1d5db;
+  border-top: 4px solid #d10f0f;
+  border-radius: 50%;
+  animation: svcc-assign-advising-spin 1s linear infinite;
+  margin-bottom: 1rem;
+  will-change: transform;
+}
+
+@keyframes svcc-assign-advising-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.svcc-assign-advising-loading-text {
+  color: #6b7280;
+  margin: 0;
+}
+
+/* Error styles */
+.svcc-assign-advising-error-container {
+  padding: 2rem;
+  text-align: center;
+}
+
+.svcc-assign-advising-error-icon {
+  margin: 0 auto 1rem;
+  color: #ef4444;
+}
+
+.svcc-assign-advising-error-text {
+  color: #dc2626;
+  font-weight: 500;
+  margin: 0 0 1rem 0;
+}
+
+.svcc-assign-advising-retry-button {
+  padding: 0.5rem 1rem;
+  background-color: #d10f0f;
+  color: white;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.svcc-assign-advising-retry-button:hover {
+  background-color: #a80c0c;
+}
+
+/* Empty state styles */
+.svcc-assign-advising-empty-container {
+  padding: 2rem;
+  text-align: center;
+  min-height: 150px;
+}
+
+.svcc-assign-advising-empty-text {
+  color: #6b7280;
+  margin: 0 0 0.5rem 0;
+}
+
+.svcc-assign-advising-empty-action {
+  color: #d10f0f;
+  background: none;
+  border: none;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  transition: color 0.2s;
+}
+
+.svcc-assign-advising-empty-action:hover {
+  color: #a80c0c;
+}
+
+/* Table styles */
+.svcc-assign-advising-table-scroll {
+  overflow-x: auto;
+  overflow-y: visible;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+  position: relative;
+  contain: layout style paint;
+}
+
+.svcc-assign-advising-table {
+  width: 100%;
+  min-width: auto;
+  border-collapse: collapse;
+  position: relative;
+  table-layout: fixed;
+}
+
+.svcc-assign-advising-table tbody tr {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 60px;
+}
+
+.svcc-assign-advising-table thead {
+  background-color: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  position: relative;
+}
+
+.svcc-assign-advising-table th {
+  padding: 0.75rem 1.5rem;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  position: relative;
+}
+
+.svcc-assign-advising-actions-header {
+  text-align: right;
+  position: relative;
+  overflow: visible;
+}
+
+.svcc-assign-advising-table tbody {
+  background-color: white;
+  position: relative;
+}
+
+.svcc-assign-advising-table tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.2s;
+  position: relative;
+}
+
+.svcc-assign-advising-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.svcc-assign-advising-table td {
+  padding: 1rem 1.5rem;
+  vertical-align: middle;
+  position: relative;
+}
+
+.svcc-assign-advising-section {
+  font-weight: 500;
+  color: #d10f0f;
+  white-space: nowrap;
+}
+
+.svcc-assign-advising-program,
+.svcc-assign-advising-year,
+.svcc-assign-advising-count {
+  color: #374151;
+  font-weight: 500;
+}
+
+.svcc-assign-advising-instructor-name {
+  color: #d10f0f;
+  font-weight: 500;
+}
+
+.svcc-assign-advising-no-instructor {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* Action buttons styles */
+.svcc-assign-advising-actions-cell {
+  text-align: right;
+  white-space: nowrap;
+  position: relative;
+  padding-right: 2rem;
+}
+
+.svcc-assign-advising-actions-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.svcc-assign-advising-button {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: background-color 0.2s, color 0.2s;
+  will-change: background-color;
+}
+
+.svcc-assign-advising-button-assign {
+  background-color: #d10f0f;
+  color: white;
+}
+
+.svcc-assign-advising-button-assign:hover {
+  background-color: #a80c0c;
+}
+
+.svcc-assign-advising-button-unassign {
+  background-color: #6b7280;
+  color: white;
+}
+
+.svcc-assign-advising-button-unassign:hover {
+  background-color: #4b5563;
+}
+
+/* Modal styles */
+.svcc-assign-advising-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 9999999999 !important;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.svcc-assign-advising-modal-content {
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  width: 100%;
+  max-width: 28rem;
+  margin: 0 auto;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: translateZ(0);
+}
+
+.svcc-assign-advising-modal-body {
+  padding: 1.5rem;
+}
+
+.svcc-assign-advising-modal-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #d10f0f;
+  margin: 0 0 1.5rem 0;
+}
+
+/* Section info in modal */
+.svcc-assign-advising-section-info {
+  background-color: #f9fafb;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.svcc-assign-advising-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.svcc-assign-advising-info-row:last-child {
+  margin-bottom: 0;
+}
+
+.svcc-assign-advising-info-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.svcc-assign-advising-info-value {
+  font-size: 0.875rem;
+  color: #111827;
+  font-weight: 600;
+}
+
+/* Form styles */
+.svcc-assign-advising-form-group {
+  margin-bottom: 1.5rem;
+}
+
+.svcc-assign-advising-form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.svcc-assign-advising-form-select {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-size: 0.875rem;
+}
+
+.svcc-assign-advising-form-select:focus {
+  border-color: #d10f0f;
+  box-shadow: 0 0 0 3px rgba(209, 15, 15, 0.1);
+}
+
+/* Modal actions */
+.svcc-assign-advising-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.svcc-assign-advising-button-primary {
+  background-color: #d10f0f;
+  color: white;
+}
+
+.svcc-assign-advising-button-primary:hover {
+  background-color: #a80c0c;
+}
+
+.svcc-assign-advising-button-primary:disabled {
+  background-color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.svcc-assign-advising-button-secondary {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.svcc-assign-advising-button-secondary:hover {
+  background-color: #e5e7eb;
+}
+
+/* Enhanced mobile responsive styles */
+@media (max-width: 767px) {
+  .svcc-assign-advising-container {
+    padding: 1rem;
+  }
+
+  .svcc-assign-advising-page-title {
+    font-size: 1.5rem;
+  }
+
+  .svcc-assign-advising-search-input {
+    min-width: 100%;
+  }
+
+  .svcc-assign-advising-modal-overlay {
+    align-items: flex-start;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .svcc-assign-advising-modal-content {
+    max-height: 85vh;
+    margin: 0;
+    width: 95%;
+    max-width: 100%;
+    border-radius: 15px;
+    position: absolute;
+    top: 80px;
+    left: 10px;
+    right: 0;
+    bottom: 0;
+    overflow-y: auto;
+  }
+
+  .svcc-assign-advising-modal-body {
+    padding: 1.5rem;
+    padding-top: 1rem;
+  }
+
+  .svcc-assign-advising-modal-actions {
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+  }
+
+  .svcc-assign-advising-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .svcc-assign-advising-table-scroll {
+    overflow-x: visible;
+    width: 100%;
+  }
+
+  .svcc-assign-advising-table {
+    width: 100%;
+    table-layout: auto;
+  }
+
+  .svcc-assign-advising-table thead {
+    display: none;
+  }
+
+  .svcc-assign-advising-table,
+  .svcc-assign-advising-table tbody,
+  .svcc-assign-advising-table tr,
+  .svcc-assign-advising-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .svcc-assign-advising-table tr {
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #e5e7eb;
+    padding: 0.75rem;
+  }
+
+  .svcc-assign-advising-table td {
+    display: flex;
+    text-align: left;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  .svcc-assign-advising-table td:before {
+    content: attr(data-label);
+    font-weight: 500;
+    text-align: left;
+    color: #6b7280;
+    margin-right: 5px;
+  }
+
+  .svcc-assign-advising-table td:last-child {
+    border-bottom: 0;
+  }
+
+  .svcc-assign-advising-actions-cell {
+    justify-content: flex-start;
+  }
+
+  .svcc-assign-advising-actions-buttons {
+    justify-content: flex-start;
+  }
+
+  .svcc-assign-advising-section,
+  .svcc-assign-advising-program,
+  .svcc-assign-advising-year {
+    white-space: normal;
+    text-align: left;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .svcc-assign-advising-page-title {
+    font-size: 1.25rem;
+  }
+}
+
+/* Additional CSS for loading, error states, and empty state */
+
+/* Loading Spinner */
+.svcc-acad-calendar-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 1rem;
+}
+
+.svcc-acad-calendar-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #f3f4f6;
+  border-top-color: #d10f0f;
+  border-radius: 50%;
+  animation: svcc-spinner-rotate 1s linear infinite;
+}
+
+@keyframes svcc-spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.svcc-acad-calendar-loading p {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+/* Error Alert */
+.svcc-acad-calendar-error {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  color: #991b1b;
+}
+
+.svcc-acad-calendar-error-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  stroke-width: 2;
+}
+
+.svcc-acad-calendar-error span {
+  flex: 1;
+  font-size: 0.875rem;
+}
+
+.svcc-acad-calendar-error-close {
+  background: none;
+  border: none;
+  color: #991b1b;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.svcc-acad-calendar-error-close:hover {
+  background-color: #fee2e2;
+}
+
+/* Modal Error */
+.svcc-acad-calendar-modal-error {
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  color: #991b1b;
+  font-size: 0.875rem;
+}
+
+/* Empty State */
+.svcc-acad-calendar-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.svcc-acad-calendar-empty-state .svcc-acad-calendar-empty-icon {
+  width: 64px;
+  height: 64px;
+  color: #d1d5db;
+  margin-bottom: 1.5rem;
+  stroke-width: 1.5;
+}
+
+.svcc-acad-calendar-empty-state h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.svcc-acad-calendar-empty-state p {
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+}
+
+.svcc-acad-calendar-empty-state .svcc-acad-calendar-btn-primary {
+  margin: 0;
+}
+
+/* Disabled State for Buttons */
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+button:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}

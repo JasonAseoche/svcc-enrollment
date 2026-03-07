@@ -1,81 +1,70 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { PlusCircle, Edit2, Trash2, Search, X, Save, AlertCircle, ChevronDown, ArrowLeft, Clock } from 'lucide-react';
+import { PlusCircle, Edit2, Trash2, Search, X, Save, AlertCircle, ArrowLeft, Clock, Plus } from 'lucide-react';
+import axios from 'axios';
 import '../../components/HeadLayout/CourseSchedules.css';
 
-// Mock data for sections
-const MOCK_SECTIONS = [
-  { 
-    id: 1, 
-    program: 'Bachelor of Science in Information Technology', 
-    section: 'BSIT-301', 
-    yearLevel: '3rd Year', 
-    term: '1st Term'
-  },
-  { 
-    id: 2, 
-    program: 'Bachelor of Science in Information Technology', 
-    section: 'BSIT-302', 
-    yearLevel: '3rd Year', 
-    term: '1st Term'
-  },
-  { 
-    id: 3, 
-    program: 'Bachelor of Science in Information Technology', 
-    section: 'BSIT-201', 
-    yearLevel: '2nd Year', 
-    term: '1st Term'
-  },
-  { 
-    id: 4, 
-    program: 'Bachelor of Science in Information Technology', 
-    section: 'BSIT-101', 
-    yearLevel: '1st Year', 
-    term: '1st Term'
-  }
-];
-
-// Mock data for schedules
-const MOCK_SCHEDULES = {
-  1: [
-    { id: 1, day: 'Monday', courseCode: 'IT 211', courseName: 'Database Management Systems', startTime: '08:00', endTime: '10:00', room: 'CS Lab 1', instructor: 'Prof. Santos' },
-    { id: 2, day: 'Monday', courseCode: 'IT 212', courseName: 'Web Development', startTime: '10:00', endTime: '12:00', room: 'CS Lab 2', instructor: 'Prof. Cruz' },
-    { id: 3, day: 'Tuesday', courseCode: 'IT 213', courseName: 'Software Engineering', startTime: '13:00', endTime: '15:00', room: 'Room 301', instructor: 'Prof. Reyes' },
-    { id: 4, day: 'Wednesday', courseCode: 'IT 211', courseName: 'Database Management Systems', startTime: '08:00', endTime: '10:00', room: 'CS Lab 1', instructor: 'Prof. Santos' },
-    { id: 5, day: 'Thursday', courseCode: 'IT 214', courseName: 'Data Structures', startTime: '15:00', endTime: '17:00', room: 'CS Lab 3', instructor: 'Prof. Garcia' },
-    { id: 6, day: 'Friday', courseCode: 'IT 212', courseName: 'Web Development', startTime: '10:00', endTime: '12:00', room: 'CS Lab 2', instructor: 'Prof. Cruz' }
-  ],
-  2: [
-    { id: 7, day: 'Monday', courseCode: 'IT 211', courseName: 'Database Management Systems', startTime: '13:00', endTime: '15:00', room: 'CS Lab 1', instructor: 'Prof. Santos' },
-    { id: 8, day: 'Tuesday', courseCode: 'IT 212', courseName: 'Web Development', startTime: '08:00', endTime: '10:00', room: 'CS Lab 2', instructor: 'Prof. Cruz' }
-  ],
-  3: [],
-  4: []
-};
+const API_URL = 'http://localhost/svcc-enrollment/manage_schedules.php';
 
 const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+// Generate time slots with 30-minute intervals in 12-hour format
 const TIME_SLOTS = [
-  '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', 
-  '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'
+  '07:00 AM', '07:30 AM', '08:00 AM', '08:30 AM', '09:00 AM', '09:30 AM',
+  '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '12:00 PM', '12:30 PM',
+  '01:00 PM', '01:30 PM', '02:00 PM', '02:30 PM', '03:00 PM', '03:30 PM',
+  '04:00 PM', '04:30 PM', '05:00 PM', '05:30 PM', '06:00 PM', '06:30 PM',
+  '07:00 PM', '07:30 PM', '08:00 PM', '08:30 PM', '09:00 PM', '09:30 PM'
 ];
 
+// Helper function to convert 24hr time to 12hr format
+const convertTo12Hour = (time24) => {
+  if (!time24) return '';
+  
+  const [hours, minutes] = time24.split(':');
+  let hour = parseInt(hours);
+  const ampm = hour >= 12 ? 'PM' : 'AM';
+  
+  hour = hour % 12;
+  hour = hour ? hour : 12;
+  
+  return `${hour.toString().padStart(2, '0')}:${minutes} ${ampm}`;
+};
+
+// Helper function to convert 12hr time to 24hr format
+const convertTo24Hour = (time12) => {
+  if (!time12) return '';
+  
+  const [time, modifier] = time12.split(' ');
+  let [hours, minutes] = time.split(':');
+  
+  if (hours === '12') {
+    hours = '00';
+  }
+  
+  if (modifier === 'PM') {
+    hours = parseInt(hours, 10) + 12;
+  }
+  
+  return `${hours}:${minutes}`;
+};
+
 const CourseSchedules = () => {
-  const [currentView, setCurrentView] = useState('list'); // 'list' or 'schedule'
+  const [currentView, setCurrentView] = useState('list');
   const [sections, setSections] = useState([]);
-  const [schedules, setSchedules] = useState({});
+  const [schedules, setSchedules] = useState([]);
+  const [instructors, setInstructors] = useState([]);
   const [selectedSection, setSelectedSection] = useState(null);
   const [filteredSections, setFilteredSections] = useState([]);
-  const [nextSectionId, setNextSectionId] = useState(5);
-  const [nextScheduleId, setNextScheduleId] = useState(9);
   
-  // Modal states
   const [showSectionModal, setShowSectionModal] = useState(false);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
-  const [deleteType, setDeleteType] = useState(''); // 'section' or 'schedule'
+  const [deleteType, setDeleteType] = useState('');
   
-  // Form states
   const [modalMode, setModalMode] = useState('add');
+  const [currentCourse, setCurrentCourse] = useState(null);
+  
   const [currentSectionForm, setCurrentSectionForm] = useState({
     id: '',
     program: 'Bachelor of Science in Information Technology',
@@ -84,32 +73,81 @@ const CourseSchedules = () => {
     term: ''
   });
   
-  const [currentScheduleForm, setCurrentScheduleForm] = useState({
+  const [scheduleEntries, setScheduleEntries] = useState([{
     id: '',
     day: '',
-    courseCode: '',
-    courseName: '',
     startTime: '',
     endTime: '',
-    room: '',
-    instructor: ''
-  });
+    room: ''
+  }]);
   
-  // Hover states for calendar
-  const [hoveredCell, setHoveredCell] = useState(null);
+  const [instructorId, setInstructorId] = useState('');
   
-  // Search and filter
   const [searchTerm, setSearchTerm] = useState('');
+  const [scheduleSearchTerm, setScheduleSearchTerm] = useState('');
   const [message, setMessage] = useState({ text: '', type: '' });
+  const [loading, setLoading] = useState(false);
+
+  const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+  const auditHeaders = {
+    'Content-Type': 'application/json',
+    'X-User-Email': storedUser?.email || storedUser?.user?.email || '',
+    'X-User-Role':  storedUser?.role  || storedUser?.user?.role  || '',
+  };
+
+  const fetchSections = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`${API_URL}?action=sections`);
+      if (response.data.success) {
+        setSections(response.data.data);
+      }
+    } catch (error) {
+      setMessage({ text: 'Failed to fetch sections', type: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchSchedules = async (sectionId) => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`${API_URL}?action=schedules&section_id=${sectionId}`);
+      if (response.data.success) {
+        setSchedules(response.data.data);
+      }
+    } catch (error) {
+      setMessage({ text: 'Failed to fetch schedules', type: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchInstructors = async () => {
+    try {
+      const response = await axios.get(`${API_URL}?action=instructors`);
+      if (response.data.success) {
+        setInstructors(response.data.data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch instructors:', error);
+    }
+  };
 
   useEffect(() => {
-    setSections(MOCK_SECTIONS);
-    setSchedules(MOCK_SCHEDULES);
+    fetchSections();
+    fetchInstructors();
   }, []);
 
   useEffect(() => {
     applyFilters();
   }, [searchTerm, sections]);
+
+  useEffect(() => {
+    if (selectedSection) {
+      fetchSchedules(selectedSection.id);
+    }
+  }, [selectedSection]);
 
   const applyFilters = useCallback(() => {
     let filtered = [...sections];
@@ -118,7 +156,7 @@ const CourseSchedules = () => {
       const searchLower = searchTerm.toLowerCase();
       filtered = filtered.filter(section => 
         (section.section || '').toLowerCase().includes(searchLower) ||
-        (section.yearLevel || '').toLowerCase().includes(searchLower) ||
+        (section.year_level || '').toLowerCase().includes(searchLower) ||
         (section.term || '').toLowerCase().includes(searchLower)
       );
     }
@@ -126,7 +164,13 @@ const CourseSchedules = () => {
     setFilteredSections(filtered);
   }, [sections, searchTerm]);
 
-  // Section handlers
+  const filteredSchedules = useMemo(() => {
+    if (!scheduleSearchTerm) return schedules;
+    return schedules.filter(schedule => {
+      return schedule.schedule_entries.some(entry => entry.day === scheduleSearchTerm);
+    });
+  }, [schedules, scheduleSearchTerm]);
+
   const openAddSectionModal = useCallback(() => {
     setCurrentSectionForm({ 
       id: '', 
@@ -140,7 +184,13 @@ const CourseSchedules = () => {
   }, []);
 
   const openEditSectionModal = useCallback((section) => {
-    setCurrentSectionForm(section);
+    setCurrentSectionForm({
+      id: section.id,
+      program: section.program,
+      section: section.section,
+      yearLevel: section.year_level,
+      term: section.term
+    });
     setModalMode('edit');
     setShowSectionModal(true);
   }, []);
@@ -153,77 +203,177 @@ const CourseSchedules = () => {
       return;
     }
     
-    if (modalMode === 'add') {
-      const newSection = { ...currentSectionForm, id: nextSectionId };
-      setSections([...sections, newSection]);
-      setSchedules({ ...schedules, [nextSectionId]: [] });
-      setNextSectionId(nextSectionId + 1);
-      setMessage({ text: 'Section added successfully', type: 'success' });
-    } else {
-      setSections(sections.map(section => 
-        section.id === currentSectionForm.id ? currentSectionForm : section
-      ));
-      setMessage({ text: 'Section updated successfully', type: 'success' });
+    try {
+      setLoading(true);
+      
+      if (modalMode === 'add') {
+        const response = await axios.post(`${API_URL}?action=section`, {
+          program: currentSectionForm.program,
+          section: currentSectionForm.section,
+          yearLevel: currentSectionForm.yearLevel,
+          term: currentSectionForm.term
+        }, { headers: auditHeaders });
+        
+        if (response.data.success) {
+          setMessage({ 
+            text: `Section created successfully! ${response.data.courses_imported} courses imported.`, 
+            type: 'success' 
+          });
+          fetchSections();
+          setShowSectionModal(false);
+        }
+      } else {
+        const yearOrTermChanged = 
+          selectedSection && 
+          (selectedSection.year_level !== currentSectionForm.yearLevel || 
+           selectedSection.term !== currentSectionForm.term);
+        
+        const response = await axios.put(`${API_URL}?action=section`, {
+          id: currentSectionForm.id,
+          program: currentSectionForm.program,
+          section: currentSectionForm.section,
+          yearLevel: currentSectionForm.yearLevel,
+          term: currentSectionForm.term
+        }, { headers: auditHeaders });
+        
+        if (response.data.success) {
+          setMessage({ text: response.data.message, type: 'success' });
+          fetchSections();
+          setShowSectionModal(false);
+          
+          if (currentView === 'schedule' && selectedSection && selectedSection.id === currentSectionForm.id) {
+            if (yearOrTermChanged) {
+              setSelectedSection({
+                ...selectedSection,
+                year_level: currentSectionForm.yearLevel,
+                term: currentSectionForm.term,
+                section: currentSectionForm.section,
+                program: currentSectionForm.program
+              });
+              
+              setTimeout(() => {
+                fetchSchedules(currentSectionForm.id);
+              }, 500);
+            } else {
+              setSelectedSection({
+                ...selectedSection,
+                section: currentSectionForm.section,
+                program: currentSectionForm.program
+              });
+            }
+          }
+        }
+      }
+    } catch (error) {
+      setMessage({ text: error.response?.data?.message || 'Operation failed', type: 'error' });
+    } finally {
+      setLoading(false);
     }
-    
-    setShowSectionModal(false);
   };
 
-  // Schedule handlers
-  const openAddScheduleModal = useCallback((day) => {
-    setCurrentScheduleForm({ 
-      id: '', 
-      day: day || '', 
-      courseCode: '', 
-      courseName: '', 
-      startTime: '', 
-      endTime: '', 
-      room: '', 
-      instructor: '' 
-    });
-    setModalMode('add');
-    setShowScheduleModal(true);
-  }, []);
-
-  const openEditScheduleModal = useCallback((schedule) => {
-    setCurrentScheduleForm(schedule);
+  const openEditScheduleModal = useCallback((course) => {
+    setCurrentCourse(course);
+    setInstructorId(course.instructor_id || '');
+    
+    // Load existing schedule entries or create one empty entry
+    if (course.schedule_entries && course.schedule_entries.length > 0) {
+      setScheduleEntries(course.schedule_entries.map(entry => ({
+        id: entry.id,
+        day: entry.day || '',
+        startTime: entry.start_time ? convertTo12Hour(entry.start_time) : '',
+        endTime: entry.end_time ? convertTo12Hour(entry.end_time) : '',
+        room: entry.room || ''
+      })));
+    } else {
+      setScheduleEntries([{
+        id: '',
+        day: '',
+        startTime: '',
+        endTime: '',
+        room: ''
+      }]);
+    }
+    
     setModalMode('edit');
     setShowScheduleModal(true);
   }, []);
 
+  const addScheduleEntry = () => {
+    setScheduleEntries([...scheduleEntries, {
+      id: '',
+      day: '',
+      startTime: '',
+      endTime: '',
+      room: ''
+    }]);
+  };
+
+  const removeScheduleEntry = (index) => {
+    const newEntries = scheduleEntries.filter((_, i) => i !== index);
+    setScheduleEntries(newEntries.length > 0 ? newEntries : [{
+      id: '',
+      day: '',
+      startTime: '',
+      endTime: '',
+      room: ''
+    }]);
+  };
+
+  const updateScheduleEntry = (index, field, value) => {
+    const newEntries = [...scheduleEntries];
+    newEntries[index][field] = value;
+    setScheduleEntries(newEntries);
+  };
+
   const handleScheduleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!currentScheduleForm.day || !currentScheduleForm.courseCode || !currentScheduleForm.courseName || 
-        !currentScheduleForm.startTime || !currentScheduleForm.endTime) {
-      setMessage({ text: 'Please fill all required fields', type: 'error' });
-      return;
-    }
-    
-    const sectionSchedules = schedules[selectedSection.id] || [];
-    
-    if (modalMode === 'add') {
-      const newSchedule = { ...currentScheduleForm, id: nextScheduleId };
-      setSchedules({
-        ...schedules,
-        [selectedSection.id]: [...sectionSchedules, newSchedule]
-      });
-      setNextScheduleId(nextScheduleId + 1);
-      setMessage({ text: 'Schedule added successfully', type: 'success' });
-    } else {
-      setSchedules({
-        ...schedules,
-        [selectedSection.id]: sectionSchedules.map(schedule => 
-          schedule.id === currentScheduleForm.id ? currentScheduleForm : schedule
-        )
-      });
+    try {
+      setLoading(true);
+      
+      // First, update the instructor for all entries of this course
+      await axios.put(`${API_URL}?action=bulk_schedule`, {
+        section_id: selectedSection.id,
+        course_id: currentCourse.course_id,
+        instructorId: instructorId || null
+      }, { headers: auditHeaders });
+      
+      // Then handle each schedule entry
+      for (const entry of scheduleEntries) {
+        if (entry.id) {
+          // Update existing entry
+          await axios.put(`${API_URL}?action=schedule`, {
+            id: entry.id,
+            day: entry.day || null,
+            startTime: entry.startTime ? convertTo24Hour(entry.startTime) : null,
+            endTime: entry.endTime ? convertTo24Hour(entry.endTime) : null,
+            room: entry.room || null,
+            instructorId: instructorId || null
+          }, { headers: auditHeaders });
+        } else if (entry.day || entry.startTime || entry.endTime || entry.room) {
+          // Add new schedule day
+          await axios.post(`${API_URL}?action=add_schedule_day`, {
+            section_id: selectedSection.id,
+            course_id: currentCourse.course_id,
+            day: entry.day || null,
+            startTime: entry.startTime ? convertTo24Hour(entry.startTime) : null,
+            endTime: entry.endTime ? convertTo24Hour(entry.endTime) : null,
+            room: entry.room || null,
+            instructorId: instructorId || null
+          }, { headers: auditHeaders });
+        }
+      }
+      
       setMessage({ text: 'Schedule updated successfully', type: 'success' });
+      fetchSchedules(selectedSection.id);
+      setShowScheduleModal(false);
+    } catch (error) {
+      setMessage({ text: error.response?.data?.message || 'Failed to update schedule', type: 'error' });
+    } finally {
+      setLoading(false);
     }
-    
-    setShowScheduleModal(false);
   };
 
-  // Delete handlers
   const confirmDelete = useCallback((id, type) => {
     setDeleteId(id);
     setDeleteType(type);
@@ -231,69 +381,45 @@ const CourseSchedules = () => {
   }, []);
 
   const handleDelete = async () => {
-    if (deleteType === 'section') {
-      setSections(sections.filter(section => section.id !== deleteId));
-      const newSchedules = { ...schedules };
-      delete newSchedules[deleteId];
-      setSchedules(newSchedules);
-      setMessage({ text: 'Section deleted successfully', type: 'success' });
-    } else if (deleteType === 'schedule') {
-      const sectionSchedules = schedules[selectedSection.id] || [];
-      setSchedules({
-        ...schedules,
-        [selectedSection.id]: sectionSchedules.filter(schedule => schedule.id !== deleteId)
-      });
-      setMessage({ text: 'Schedule deleted successfully', type: 'success' });
+    try {
+      setLoading(true);
+      
+      if (deleteType === 'section') {
+        const response = await axios.delete(`${API_URL}?action=section`, { data: { id: deleteId }, headers: auditHeaders });
+        if (response.data.success) {
+          setMessage({ text: 'Section deleted successfully', type: 'success' });
+          fetchSections();
+        }
+      } else if (deleteType === 'schedule') {
+        const response = await axios.delete(`${API_URL}?action=schedule`, { data: { id: deleteId }, headers: auditHeaders });
+        if (response.data.success) {
+          setMessage({ text: 'Schedule entry deleted successfully', type: 'success' });
+          fetchSchedules(selectedSection.id);
+        }
+      }
+      
+      setShowDeleteConfirm(false);
+      setDeleteId(null);
+      setDeleteType('');
+    } catch (error) {
+      setMessage({ text: 'Delete operation failed', type: 'error' });
+    } finally {
+      setLoading(false);
     }
-    setShowDeleteConfirm(false);
-    setDeleteId(null);
-    setDeleteType('');
   };
 
   const handleViewSchedule = (section) => {
     setSelectedSection(section);
     setCurrentView('schedule');
+    setScheduleSearchTerm('');
   };
 
   const handleBackToList = () => {
     setCurrentView('list');
     setSelectedSection(null);
+    setScheduleSearchTerm('');
+    setSchedules([]);
   };
-
-  const getSchedulesForDayAndTime = (day, time) => {
-    const sectionSchedules = schedules[selectedSection?.id] || [];
-    return sectionSchedules.filter(schedule => {
-      if (schedule.day !== day) return false;
-      const scheduleStart = schedule.startTime;
-      return scheduleStart === time;
-    });
-  };
-
-  const calculateRowSpan = (startTime, endTime) => {
-    const startIndex = TIME_SLOTS.indexOf(startTime);
-    const endIndex = TIME_SLOTS.indexOf(endTime);
-    
-    if (startIndex === - 1 || endIndex === -1) return 1;
-    
-    // For 08:00-10:00: startIndex=1, endIndex=3, rowspan = 2
-    // This spans rows 08:00 and 09:00 (does NOT include 10:00 row)
-    return endIndex - startIndex;
-  };
-
- const isCellOccupied = (day, time) => {
-  const sectionSchedules = schedules[selectedSection?.id] || [];
-  const timeIndex = TIME_SLOTS.indexOf(time);
-  
-  return sectionSchedules.some(schedule => {
-    if (schedule.day !== day) return false;
-    const startIndex = TIME_SLOTS.indexOf(schedule.startTime);
-    const endIndex = TIME_SLOTS.indexOf(schedule.endTime);
-    
-    // For a schedule 13:00-15:00, it should occupy rows 13:00 and 14:00 only
-    // Skip rendering cells that fall between start and end (exclusive of both)
-    return timeIndex > startIndex && timeIndex < endIndex;
-  });
-};
 
   useEffect(() => {
     if (message.text) {
@@ -304,7 +430,6 @@ const CourseSchedules = () => {
     }
   }, [message]);
 
-  // Render section list view
   const renderListView = () => (
     <div className="course-schedules-container">
       <div className="course-schedules-header-card">
@@ -312,11 +437,30 @@ const CourseSchedules = () => {
           <h1 className="course-schedules-page-title">Course Schedules</h1>
           <div className="course-schedules-header-actions">
             <div className="course-schedules-search-container">
-              <input type="text" placeholder="Search sections..." className="course-schedules-search-input" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+              <input 
+                type="text" 
+                placeholder="Search sections..." 
+                className="course-schedules-search-input" 
+                value={searchTerm} 
+                onChange={(e) => setSearchTerm(e.target.value)} 
+              />
               <Search className="course-schedules-search-icon" size={18} />
-              {searchTerm && (<button onClick={() => setSearchTerm('')} className="course-schedules-search-clear"><X size={18} /></button>)}
+              {searchTerm && (
+                <button 
+                  onClick={() => setSearchTerm('')} 
+                  className="course-schedules-search-clear"
+                >
+                  <X size={18} />
+                </button>
+              )}
             </div>
-            <button onClick={openAddSectionModal} className="course-schedules-add-button"><PlusCircle size={18} className="course-schedules-button-icon" />Add Section</button>
+            <button 
+              onClick={openAddSectionModal} 
+              className="course-schedules-add-button"
+            >
+              <PlusCircle size={18} className="course-schedules-button-icon" />
+              Add Section
+            </button>
           </div>
         </div>
       </div>
@@ -328,63 +472,107 @@ const CourseSchedules = () => {
         </div>
       )}
 
-      <div className="course-schedules-cards-container">
-        {filteredSections.length === 0 ? (
-          <div className="course-schedules-empty-container">
-            <p className="course-schedules-empty-text">No sections found</p>
-            {!searchTerm && (<button onClick={openAddSectionModal} className="course-schedules-empty-action"><PlusCircle size={16} />Add your first section</button>)}
-          </div>
-        ) : (
-          <div className="course-schedules-cards-grid">
-            {filteredSections.map((section) => (
-              <div key={section.id} className="course-schedules-card">
-                <div className="course-schedules-card-header">
-                  <div className="course-schedules-card-title-section">
-                    <div className="course-schedules-section-badge">{section.section}</div>
-                    <h3 className="course-schedules-card-title">{section.program}</h3>
+      {loading ? (
+        <div className="course-schedules-loading">Loading...</div>
+      ) : (
+        <div className="course-schedules-cards-container">
+          {filteredSections.length === 0 ? (
+            <div className="course-schedules-empty-container">
+              <p className="course-schedules-empty-text">No sections found</p>
+              {!searchTerm && (
+                <button 
+                  onClick={openAddSectionModal} 
+                  className="course-schedules-empty-action"
+                >
+                  <PlusCircle size={16} />
+                  Add your first section
+                </button>
+              )}
+            </div>
+          ) : (
+            <div className="course-schedules-cards-grid">
+              {filteredSections.map((section) => (
+                <div key={section.id} className="course-schedules-card">
+                  <div className="course-schedules-card-header">
+                    <div className="course-schedules-card-title-section">
+                      <div className="course-schedules-section-badge">{section.section}</div>
+                      <h3 className="course-schedules-card-title">{section.program}</h3>
+                    </div>
+                    <div className="course-schedules-card-actions">
+                      <button 
+                        onClick={() => handleViewSchedule(section)} 
+                        className="course-schedules-view-button" 
+                        title="View schedule"
+                      >
+                        View
+                      </button>
+                    </div>
                   </div>
-                  <div className="course-schedules-card-actions">
-                    <button onClick={() => handleViewSchedule(section)} className="course-schedules-view-button" title="View schedule">View</button>
+                  <div className="course-schedules-card-divider"></div>
+                  <div className="course-schedules-card-content">
+                    <div className="course-schedules-card-info">
+                      <span className="course-schedules-info-label">Year Level:</span>
+                      <span className="course-schedules-info-value">{section.year_level}</span>
+                    </div>
+                    <div className="course-schedules-card-info">
+                      <span className="course-schedules-info-label">Sem:</span>
+                      <span className="course-schedules-info-value">{section.term.replace('1st Term','1st Sem').replace('2nd Term','2nd Sem')}</span>
+                    </div>
+                  </div>
+                  <div className="course-schedules-card-footer">
+                    <button 
+                      onClick={() => openEditSectionModal(section)} 
+                      className="course-schedules-footer-btn course-schedules-edit-btn"
+                    >
+                      <Edit2 size={16} />
+                      Edit
+                    </button>
+                    <button 
+                      onClick={() => confirmDelete(section.id, 'section')} 
+                      className="course-schedules-footer-btn course-schedules-delete-btn"
+                    >
+                      <Trash2 size={16} />
+                      Delete
+                    </button>
                   </div>
                 </div>
-                <div className="course-schedules-card-divider"></div>
-                <div className="course-schedules-card-content">
-                  <div className="course-schedules-card-info">
-                    <span className="course-schedules-info-label">Year Level:</span>
-                    <span className="course-schedules-info-value">{section.yearLevel}</span>
-                  </div>
-                  <div className="course-schedules-card-info">
-                    <span className="course-schedules-info-label">Term:</span>
-                    <span className="course-schedules-info-value">{section.term}</span>
-                  </div>
-                  <div className="course-schedules-card-info">
-                    <span className="course-schedules-info-label">Schedules:</span>
-                    <span className="course-schedules-info-value">{(schedules[section.id] || []).length} classes</span>
-                  </div>
-                </div>
-                <div className="course-schedules-card-footer">
-                  <button onClick={() => openEditSectionModal(section)} className="course-schedules-footer-btn course-schedules-edit-btn"><Edit2 size={16} />Edit</button>
-                  <button onClick={() => confirmDelete(section.id, 'section')} className="course-schedules-footer-btn course-schedules-delete-btn"><Trash2 size={16} />Delete</button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 
-  // Render schedule calendar view
   const renderScheduleView = () => (
     <div className="course-schedules-container">
       <div className="course-schedules-header-card">
         <div className="course-schedules-header-content">
           <div className="course-schedules-title-with-back">
-            <button onClick={handleBackToList} className="course-schedules-back-button"><ArrowLeft size={20} /></button>
+            <button 
+              onClick={handleBackToList} 
+              className="course-schedules-back-button"
+            >
+              <ArrowLeft size={20} />
+            </button>
             <div>
               <h1 className="course-schedules-page-title">{selectedSection?.section} Schedule</h1>
-              <p className="course-schedules-subtitle">{selectedSection?.yearLevel} - {selectedSection?.term}</p>
+              <p className="course-schedules-subtitle">
+                {selectedSection?.year_level} - {selectedSection?.term.replace('1st Term','1st Sem').replace('2nd Term','2nd Sem')}
+              </p>
             </div>
+          </div>
+          <div className="course-schedules-header-actions">
+            <select
+              value={scheduleSearchTerm}
+              onChange={(e) => setScheduleSearchTerm(e.target.value)}
+              className="course-schedules-filter-select"
+            >
+              <option value="">Show All</option>
+              {DAYS_OF_WEEK.map(day => (
+                <option key={day} value={day}>{day}</option>
+              ))}
+            </select>
           </div>
         </div>
       </div>
@@ -396,79 +584,88 @@ const CourseSchedules = () => {
         </div>
       )}
 
-      <div className="course-schedules-calendar-container">
-        <div className="course-schedules-calendar-scroll">
-          <table className="course-schedules-calendar">
-            <thead>
-              <tr>
-                <th className="course-schedules-time-header">Time</th>
-                {DAYS_OF_WEEK.map(day => (
-                  <th key={day} className="course-schedules-day-header">{day}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {TIME_SLOTS.map(time => (
-                <tr key={time}>
-                  <td className="course-schedules-time-cell">{time}</td>
-                  {DAYS_OF_WEEK.map(day => {
-                    // Skip this cell if it's occupied by a schedule from a previous time slot
-                    if (isCellOccupied(day, time)) {
-                      return null;
-                    }
-
-                    const cellSchedules = getSchedulesForDayAndTime(day, time);
-                    const cellKey = `${day}-${time}`;
-                    const isHovered = hoveredCell === cellKey;
-                    
-                    // Calculate rowspan for schedules
-                    const rowSpan = cellSchedules.length > 0 
-                      ? calculateRowSpan(cellSchedules[0].startTime, cellSchedules[0].endTime)
-                      : 1;
-                    
-                    return (
-                      <td 
-                        key={day} 
-                        className={`course-schedules-schedule-cell ${cellSchedules.length > 0 ? 'has-schedule' : 'empty-cell'}`}
-                        rowSpan={rowSpan}
-                        onMouseEnter={() => setHoveredCell(cellKey)}
-                        onMouseLeave={() => setHoveredCell(null)}
-                      >
-                        {cellSchedules.length > 0 ? (
-                          cellSchedules.map(schedule => (
-                            <div key={schedule.id} className="course-schedules-schedule-item">
-                              <div className="course-schedules-schedule-content">
-                                <div className="course-schedules-schedule-code">{schedule.courseCode}</div>
-                                <div className="course-schedules-schedule-name">{schedule.courseName}</div>
-                                <div className="course-schedules-schedule-time">
-                                  <Clock size={12} /> {schedule.startTime} - {schedule.endTime}
-                                </div>
-                                <div className="course-schedules-schedule-room">{schedule.room}</div>
-                                <div className="course-schedules-schedule-instructor">{schedule.instructor}</div>
+      <div className="course-schedules-table-container">
+        <div className="course-schedules-table-scroll">
+          {loading ? (
+            <div className="course-schedules-table-loading">Loading schedules...</div>
+          ) : filteredSchedules.length === 0 ? (
+            <div className="course-schedules-table-empty">
+              <p className="course-schedules-table-empty-text">
+                {scheduleSearchTerm ? `No schedules found for ${scheduleSearchTerm}` : 'No courses available for this section'}
+              </p>
+            </div>
+          ) : (
+            <table className="course-schedules-table">
+              <thead>
+                <tr>
+                  <th>Course Code</th>
+                  <th>Course Name</th>
+                  <th>Units</th>
+                  <th>Schedule</th>
+                  <th>Instructor</th>
+                  <th style={{ textAlign: 'right' }}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredSchedules.map((course) => (
+                  <tr key={course.course_id}>
+                    <td data-label="Course Code" className="course-schedules-table-course-code">
+                      {course.course_code}
+                    </td>
+                    <td data-label="Course Name" className="course-schedules-table-course-name">
+                      {course.course_name}
+                    </td>
+                    <td data-label="Units">{course.units_required}</td>
+                    <td data-label="Schedule">
+                      {course.schedule_entries && course.schedule_entries.length > 0 ? (
+                        <div className="course-schedules-entries-list">
+                          {course.schedule_entries.map((entry, idx) => (
+                            <div key={idx} className="course-schedules-entry-item">
+                              <div className="course-schedules-entry-day">
+                                {entry.day || '-'}
                               </div>
-                              {isHovered && (
-                                <div className="course-schedules-schedule-actions">
-                                  <button onClick={() => openEditScheduleModal(schedule)} className="course-schedules-action-btn course-schedules-edit-action"><Edit2 size={14} /></button>
-                                  <button onClick={() => confirmDelete(schedule.id, 'schedule')} className="course-schedules-action-btn course-schedules-delete-action"><Trash2 size={14} /></button>
+                              {entry.start_time && entry.end_time && (
+                                <div className="course-schedules-entry-time">
+                                  <Clock size={12} />
+                                  {convertTo12Hour(entry.start_time)} - {convertTo12Hour(entry.end_time)}
                                 </div>
                               )}
+                              {entry.room && (
+                                <div className="course-schedules-entry-room">
+                                  Room: {entry.room}
+                                </div>
+                              )}
+                              <button 
+                                onClick={() => confirmDelete(entry.id, 'schedule')} 
+                                className="course-schedules-entry-delete"
+                                title="Delete this schedule entry"
+                              >
+                                <Trash2 size={12} />
+                              </button>
                             </div>
-                          ))
-                        ) : (
-                          isHovered && (
-                            <button onClick={() => openAddScheduleModal(day)} className="course-schedules-add-schedule-btn">
-                              <PlusCircle size={16} />
-                              <span>Add Schedule</span>
-                            </button>
-                          )
-                        )}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                          ))}
+                        </div>
+                      ) : (
+                        <span>-</span>
+                      )}
+                    </td>
+                    <td data-label="Instructor">{course.instructor_name || 'Not assigned'}</td>
+                    <td data-label="Actions">
+                      <div className="course-schedules-table-actions">
+                        <button 
+                          onClick={() => openEditScheduleModal(course)} 
+                          className="course-schedules-table-action-btn course-schedules-table-edit-btn"
+                          title="Edit schedule"
+                        >
+                          <Edit2 size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>
@@ -483,20 +680,46 @@ const CourseSchedules = () => {
         <div className="course-schedules-modal-overlay">
           <div className="course-schedules-modal-content">
             <div className="course-schedules-modal-body">
-              <h2 className="course-schedules-modal-title">{modalMode === 'add' ? 'Add New Section' : 'Edit Section'}</h2>
+              <h2 className="course-schedules-modal-title">
+                {modalMode === 'add' ? 'Add New Section' : 'Edit Section'}
+              </h2>
+              {modalMode === 'add' && (
+                <div className="course-schedules-modal-notice">
+                  <AlertCircle size={16} />
+                  <span>Approved courses matching the year level and term will be automatically imported.</span>
+                </div>
+              )}
               <form onSubmit={handleSectionSubmit}>
                 <div className="course-schedules-form-group">
                   <label className="course-schedules-form-label">Program</label>
-                  <input type="text" value={currentSectionForm.program} className="course-schedules-form-input" disabled style={{backgroundColor: '#f3f4f6', cursor: 'not-allowed'}} />
+                  <input 
+                    type="text" 
+                    value={currentSectionForm.program} 
+                    className="course-schedules-form-input" 
+                    disabled 
+                    style={{backgroundColor: '#f3f4f6', cursor: 'not-allowed'}} 
+                  />
                 </div>
                 <div className="course-schedules-form-group">
                   <label className="course-schedules-form-label">Section*</label>
-                  <input type="text" value={currentSectionForm.section} onChange={(e) => setCurrentSectionForm({...currentSectionForm, section: e.target.value})} className="course-schedules-form-input" placeholder="e.g., BSIT-301" required />
+                  <input 
+                    type="text" 
+                    value={currentSectionForm.section} 
+                    onChange={(e) => setCurrentSectionForm({...currentSectionForm, section: e.target.value})} 
+                    className="course-schedules-form-input" 
+                    placeholder="e.g., BSIT-301" 
+                    required 
+                  />
                 </div>
                 <div className="course-schedules-form-row">
                   <div className="course-schedules-form-group">
                     <label className="course-schedules-form-label">Year Level*</label>
-                    <select value={currentSectionForm.yearLevel} onChange={(e) => setCurrentSectionForm({...currentSectionForm, yearLevel: e.target.value})} className="course-schedules-form-select" required>
+                    <select 
+                      value={currentSectionForm.yearLevel} 
+                      onChange={(e) => setCurrentSectionForm({...currentSectionForm, yearLevel: e.target.value})} 
+                      className="course-schedules-form-select" 
+                      required
+                    >
                       <option value="">Select Year Level</option>
                       <option value="1st Year">1st Year</option>
                       <option value="2nd Year">2nd Year</option>
@@ -506,16 +729,34 @@ const CourseSchedules = () => {
                   </div>
                   <div className="course-schedules-form-group">
                     <label className="course-schedules-form-label">Term*</label>
-                    <select value={currentSectionForm.term} onChange={(e) => setCurrentSectionForm({...currentSectionForm, term: e.target.value})} className="course-schedules-form-select" required>
-                      <option value="">Select Term</option>
-                      <option value="1st Term">1st Term</option>
-                      <option value="2nd Term">2nd Term</option>
+                    <select 
+                      value={currentSectionForm.term} 
+                      onChange={(e) => setCurrentSectionForm({...currentSectionForm, term: e.target.value})} 
+                      className="course-schedules-form-select" 
+                      required
+                    >
+                      <option value="">Select Sem</option>
+                      <option value="1st Term">1st Sem</option>
+                      <option value="2nd Term">2nd Sem</option>
                     </select>
                   </div>
                 </div>
                 <div className="course-schedules-modal-actions">
-                  <button type="button" onClick={() => setShowSectionModal(false)} className="course-schedules-button course-schedules-button-secondary">Cancel</button>
-                  <button type="submit" className="course-schedules-button course-schedules-button-primary"><Save size={18} className="course-schedules-button-icon" />{modalMode === 'add' ? 'Create Section' : 'Update Section'}</button>
+                  <button 
+                    type="button" 
+                    onClick={() => setShowSectionModal(false)} 
+                    className="course-schedules-button course-schedules-button-secondary"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    type="submit" 
+                    className="course-schedules-button course-schedules-button-primary"
+                    disabled={loading}
+                  >
+                    <Save size={18} className="course-schedules-button-icon" />
+                    {modalMode === 'add' ? 'Create Section' : 'Update Section'}
+                  </button>
                 </div>
               </form>
             </div>
@@ -526,52 +767,130 @@ const CourseSchedules = () => {
       {/* Schedule Modal */}
       {showScheduleModal && (
         <div className="course-schedules-modal-overlay">
-          <div className="course-schedules-modal-content">
+          <div className="course-schedules-modal-content course-schedules-modal-wide">
             <div className="course-schedules-modal-body">
-              <h2 className="course-schedules-modal-title">{modalMode === 'add' ? 'Add Schedule' : 'Edit Schedule'}</h2>
+              <h2 className="course-schedules-modal-title">
+                Edit Schedule - {currentCourse?.course_code} {currentCourse?.course_name}
+              </h2>
               <form onSubmit={handleScheduleSubmit}>
                 <div className="course-schedules-form-group">
-                  <label className="course-schedules-form-label">Day*</label>
-                  <select value={currentScheduleForm.day} onChange={(e) => setCurrentScheduleForm({...currentScheduleForm, day: e.target.value})} className="course-schedules-form-select" required>
-                    <option value="">Select Day</option>
-                    {DAYS_OF_WEEK.map(day => (<option key={day} value={day}>{day}</option>))}
+                  <label className="course-schedules-form-label">Instructor</label>
+                  <select 
+                    value={instructorId} 
+                    onChange={(e) => setInstructorId(e.target.value)} 
+                    className="course-schedules-form-select"
+                  >
+                    <option value="">Select Instructor</option>
+                    {instructors.map(instructor => (
+                      <option key={instructor.user_id} value={instructor.user_id}>
+                        {instructor.full_name} {instructor.department && `(${instructor.department})`}
+                      </option>
+                    ))}
                   </select>
                 </div>
-                <div className="course-schedules-form-group">
-                  <label className="course-schedules-form-label">Course Code*</label>
-                  <input type="text" value={currentScheduleForm.courseCode} onChange={(e) => setCurrentScheduleForm({...currentScheduleForm, courseCode: e.target.value})} className="course-schedules-form-input" placeholder="e.g., IT 211" required />
-                </div>
-                <div className="course-schedules-form-group">
-                  <label className="course-schedules-form-label">Course Name*</label>
-                  <input type="text" value={currentScheduleForm.courseName} onChange={(e) => setCurrentScheduleForm({...currentScheduleForm, courseName: e.target.value})} className="course-schedules-form-input" placeholder="e.g., Database Management Systems" required />
-                </div>
-                <div className="course-schedules-form-row">
-                  <div className="course-schedules-form-group">
-                    <label className="course-schedules-form-label">Start Time*</label>
-                    <select value={currentScheduleForm.startTime} onChange={(e) => setCurrentScheduleForm({...currentScheduleForm, startTime: e.target.value})} className="course-schedules-form-select" required>
-                      <option value="">Select Time</option>
-                      {TIME_SLOTS.map(time => (<option key={time} value={time}>{time}</option>))}
-                    </select>
+
+                <div className="course-schedules-schedule-entries">
+                  <div className="course-schedules-entries-header">
+                    <h3>Schedule Days</h3>
+                    <button 
+                      type="button" 
+                      onClick={addScheduleEntry}
+                      className="course-schedules-add-day-btn"
+                    >
+                      <Plus size={16} />
+                      Add Another Day
+                    </button>
                   </div>
-                  <div className="course-schedules-form-group">
-                    <label className="course-schedules-form-label">End Time*</label>
-                    <select value={currentScheduleForm.endTime} onChange={(e) => setCurrentScheduleForm({...currentScheduleForm, endTime: e.target.value})} className="course-schedules-form-select" required>
-                      <option value="">Select Time</option>
-                      {TIME_SLOTS.map(time => (<option key={time} value={time}>{time}</option>))}
-                    </select>
-                  </div>
+
+                  {scheduleEntries.map((entry, index) => (
+                    <div key={index} className="course-schedules-entry-card">
+                      <div className="course-schedules-entry-header">
+                        <span>Day {index + 1}</span>
+                        {scheduleEntries.length > 1 && (
+                          <button 
+                            type="button"
+                            onClick={() => removeScheduleEntry(index)}
+                            className="course-schedules-remove-entry-btn"
+                          >
+                            <X size={16} />
+                          </button>
+                        )}
+                      </div>
+                      
+                      <div className="course-schedules-form-row">
+                        <div className="course-schedules-form-group">
+                          <label className="course-schedules-form-label">Day</label>
+                          <select 
+                            value={entry.day} 
+                            onChange={(e) => updateScheduleEntry(index, 'day', e.target.value)} 
+                            className="course-schedules-form-select"
+                          >
+                            <option value="">Select Day</option>
+                            {DAYS_OF_WEEK.map(day => (
+                              <option key={day} value={day}>{day}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="course-schedules-form-group">
+                          <label className="course-schedules-form-label">Room</label>
+                          <input 
+                            type="text" 
+                            value={entry.room} 
+                            onChange={(e) => updateScheduleEntry(index, 'room', e.target.value)} 
+                            className="course-schedules-form-input" 
+                            placeholder="e.g., CS Lab 1" 
+                          />
+                        </div>
+                      </div>
+
+                      <div className="course-schedules-form-row">
+                        <div className="course-schedules-form-group">
+                          <label className="course-schedules-form-label">Start Time</label>
+                          <select 
+                            value={entry.startTime} 
+                            onChange={(e) => updateScheduleEntry(index, 'startTime', e.target.value)} 
+                            className="course-schedules-form-select"
+                          >
+                            <option value="">Select Time</option>
+                            {TIME_SLOTS.map(time => (
+                              <option key={time} value={time}>{time}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div className="course-schedules-form-group">
+                          <label className="course-schedules-form-label">End Time</label>
+                          <select 
+                            value={entry.endTime} 
+                            onChange={(e) => updateScheduleEntry(index, 'endTime', e.target.value)} 
+                            className="course-schedules-form-select"
+                          >
+                            <option value="">Select Time</option>
+                            {TIME_SLOTS.map(time => (
+                              <option key={time} value={time}>{time}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div className="course-schedules-form-group">
-                  <label className="course-schedules-form-label">Room</label>
-                  <input type="text" value={currentScheduleForm.room} onChange={(e) => setCurrentScheduleForm({...currentScheduleForm, room: e.target.value})} className="course-schedules-form-input" placeholder="e.g., CS Lab 1" />
-                </div>
-                <div className="course-schedules-form-group">
-                  <label className="course-schedules-form-label">Instructor</label>
-                  <input type="text" value={currentScheduleForm.instructor} onChange={(e) => setCurrentScheduleForm({...currentScheduleForm, instructor: e.target.value})} className="course-schedules-form-input" placeholder="e.g., Prof. Santos" />
-                </div>
+
                 <div className="course-schedules-modal-actions">
-                  <button type="button" onClick={() => setShowScheduleModal(false)} className="course-schedules-button course-schedules-button-secondary">Cancel</button>
-                  <button type="submit" className="course-schedules-button course-schedules-button-primary"><Save size={18} className="course-schedules-button-icon" />{modalMode === 'add' ? 'Add Schedule' : 'Update Schedule'}</button>
+                  <button 
+                    type="button" 
+                    onClick={() => setShowScheduleModal(false)} 
+                    className="course-schedules-button course-schedules-button-secondary"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    type="submit" 
+                    className="course-schedules-button course-schedules-button-primary"
+                    disabled={loading}
+                  >
+                    <Save size={18} className="course-schedules-button-icon" />
+                    Update Schedule
+                  </button>
                 </div>
               </form>
             </div>
@@ -584,10 +903,24 @@ const CourseSchedules = () => {
         <div className="course-schedules-modal-overlay">
           <div className="course-schedules-confirm-modal">
             <h3 className="course-schedules-confirm-title">Confirm Delete</h3>
-            <p className="course-schedules-confirm-text">Are you sure you want to delete this {deleteType}? This action cannot be undone.</p>
+            <p className="course-schedules-confirm-text">
+              Are you sure you want to delete this {deleteType}? This action cannot be undone.
+            </p>
             <div className="course-schedules-confirm-actions">
-              <button onClick={() => setShowDeleteConfirm(false)} className="course-schedules-button course-schedules-button-secondary">Cancel</button>
-              <button onClick={handleDelete} className="course-schedules-button course-schedules-button-danger"><Trash2 size={18} className="course-schedules-button-icon" />Delete</button>
+              <button 
+                onClick={() => setShowDeleteConfirm(false)} 
+                className="course-schedules-button course-schedules-button-secondary"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleDelete} 
+                className="course-schedules-button course-schedules-button-danger"
+                disabled={loading}
+              >
+                <Trash2 size={18} className="course-schedules-button-icon" />
+                Delete
+              </button>
             </div>
           </div>
         </div>

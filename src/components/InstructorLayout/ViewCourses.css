@@ -45,6 +45,26 @@
   gap: 1rem;
 }
 
+.viewcourses-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.viewcourses-breadcrumb-separator {
+  color: #9ca3af;
+  font-size: 1.25rem;
+  font-weight: 400;
+}
+
+.viewcourses-section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #6b7280;
+  margin: 0;
+}
+
 .viewcourses-back-button {
   background: none;
   border: none;
@@ -133,7 +153,7 @@
 
 .viewcourses-courses-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   gap: 1.5rem;
 }
 
@@ -472,8 +492,22 @@
     font-size: 1.5rem;
   }
 
+  .viewcourses-section-title {
+    font-size: 1.125rem;
+  }
+
   .viewcourses-title-with-back {
     width: 100%;
+  }
+
+  .viewcourses-breadcrumb {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .viewcourses-breadcrumb-separator {
+    display: none;
   }
 }
 
@@ -492,6 +526,10 @@
 
   .viewcourses-page-title {
     font-size: 1.25rem;
+  }
+
+  .viewcourses-section-title {
+    font-size: 1rem;
   }
 
   .viewcourses-courses-container {

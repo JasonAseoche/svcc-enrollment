@@ -175,3 +175,180 @@
     font-size: 1.25rem;
   }
 }
+
+/* ── Step 2: Course Selection ───────────────────────────────── */
+.svcc-exist-enroll-course-section {
+  margin-bottom: 28px;
+}
+
+.svcc-exist-enroll-course-group-header {
+  padding: 10px 16px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.svcc-exist-enroll-course-group-header--primary {
+  background: #c0392b;
+  color: #fff;
+}
+
+.svcc-exist-enroll-course-group-header--secondary {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.svcc-exist-enroll-course-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.svcc-exist-enroll-course-table th {
+  padding: 9px 12px;
+  background: #f8f9fa;
+  text-align: left;
+  font-weight: 600;
+  color: #555;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.svcc-exist-enroll-course-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid #f0f0f0;
+  color: #444;
+}
+
+.svcc-exist-enroll-course-table tbody tr:hover {
+  background: #f9f9f9;
+  cursor: pointer;
+}
+
+.svcc-exist-enroll-course-table tbody tr.selected {
+  background: #eef4ff;
+}
+
+.svcc-exist-enroll-course-code {
+  font-weight: 700;
+  color: #333;
+}
+
+.svcc-exist-enroll-course-prereq {
+  color: #888;
+  font-size: 12px;
+}
+
+.svcc-exist-enroll-step2-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  justify-content: flex-end;
+}
+
+.svcc-exist-enroll-btn-back {
+  background: #6c757d;
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.svcc-exist-enroll-btn-back:hover {
+  background: #5a6268;
+}
+
+.svcc-exist-enroll-selected-count {
+  font-size: 13px;
+  color: #666;
+  align-self: center;
+  margin-right: auto;
+}
+
+/* ── Rejection Modal ─────────────────────────────────────────── */
+.svcc-rejection-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 16px;
+}
+
+.svcc-rejection-modal {
+  background: #fff;
+  border-radius: 12px;
+  padding: 40px 36px;
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.svcc-rejection-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 20px;
+  color: #dc2626;
+}
+
+.svcc-rejection-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.svcc-rejection-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 12px;
+}
+
+.svcc-rejection-body {
+  font-size: 0.9rem;
+  color: #4b5563;
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.svcc-rejection-reason {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 0.875rem;
+  color: #b91c1c;
+  margin-bottom: 16px;
+  text-align: left;
+  line-height: 1.5;
+}
+
+.svcc-rejection-contact {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.svcc-rejection-btn {
+  background: #1a73e8;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.svcc-rejection-btn:hover {
+  background: #1558b0;
+}

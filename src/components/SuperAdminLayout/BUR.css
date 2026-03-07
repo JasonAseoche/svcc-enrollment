@@ -1,0 +1,758 @@
+/* =============================================
+   BUR — Backup & Recovery Styles
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root {
+  --bur-bg: #f4f5f7;
+  --bur-surface: #ffffff;
+  --bur-border: #e2e5ea;
+  --bur-border-light: #eef0f4;
+  --bur-text-primary: #1a1d23;
+  --bur-text-secondary: #6b7280;
+  --bur-text-muted: #9ca3af;
+  --bur-accent: #1e40af;
+  --bur-accent-light: #eff6ff;
+  --bur-amber: #b45309;
+  --bur-amber-light: #fffbeb;
+  --bur-success: #15803d;
+  --bur-success-bg: #f0fdf4;
+  --bur-danger: #b91c1c;
+  --bur-danger-bg: #fef2f2;
+  --bur-warning: #d97706;
+  --bur-warning-bg: #fef3c7;
+  --bur-shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --bur-shadow: 0 4px 12px rgba(0,0,0,0.07);
+  --bur-radius: 8px;
+  --bur-font: 'IBM Plex Sans', sans-serif;
+  --bur-mono: 'IBM Plex Mono', monospace;
+}
+
+.bur {
+  font-family: var(--bur-font);
+  background: var(--bur-bg);
+  min-height: 100vh;
+  padding: 28px 32px;
+  color: var(--bur-text-primary);
+}
+
+/* Header */
+.bur__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.bur__header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bur__header-icon {
+  color: var(--bur-accent);
+  background: var(--bur-accent-light);
+  padding: 8px;
+  border-radius: 6px;
+  width: 36px;
+  height: 36px;
+}
+
+.bur__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--bur-text-primary);
+  margin: 0;
+}
+
+.bur__subtitle {
+  font-size: 0.8rem;
+  color: var(--bur-text-secondary);
+  margin: 2px 0 0;
+}
+
+.bur__status-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--bur-success);
+  background: var(--bur-success-bg);
+  border: 1px solid #bbf7d0;
+  padding: 6px 14px;
+  border-radius: 20px;
+}
+
+/* Info Banner */
+.bur__info-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: var(--bur-accent-light);
+  border: 1px solid #bfdbfe;
+  border-radius: var(--bur-radius);
+  padding: 12px 16px;
+  margin-bottom: 24px;
+  font-size: 0.82rem;
+  color: var(--bur-accent);
+  line-height: 1.5;
+}
+
+.bur__info-banner svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.bur__info-banner p {
+  margin: 0;
+}
+
+/* Action Cards */
+.bur__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.bur-card {
+  background: var(--bur-surface);
+  border: 1px solid var(--bur-border);
+  border-radius: var(--bur-radius);
+  padding: 24px;
+  box-shadow: var(--bur-shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bur-card__icon-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.bur-card__icon-wrap--blue {
+  background: var(--bur-accent-light);
+  color: var(--bur-accent);
+}
+
+.bur-card__icon-wrap--amber {
+  background: var(--bur-amber-light);
+  color: var(--bur-amber);
+}
+
+.bur-card__title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--bur-text-primary);
+  margin: 0;
+}
+
+.bur-card__desc {
+  font-size: 0.83rem;
+  color: var(--bur-text-secondary);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.bur-card__mono {
+  font-family: var(--bur-mono);
+  background: var(--bur-border-light);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 0.78rem;
+}
+
+.bur-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  color: var(--bur-text-muted);
+}
+
+/* Buttons */
+.bur-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 9px 18px;
+  font-size: 0.83rem;
+  font-weight: 500;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-family: var(--bur-font);
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.bur-btn--primary {
+  background: var(--bur-accent);
+  color: white;
+  margin-top: 4px;
+}
+
+.bur-btn--primary:hover:not(:disabled) {
+  background: #1d3a9e;
+}
+
+.bur-btn--primary:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
+.bur-btn--danger {
+  background: var(--bur-danger);
+  color: white;
+}
+
+.bur-btn--danger:hover {
+  background: #991b1b;
+}
+
+.bur-btn--ghost {
+  background: transparent;
+  color: var(--bur-text-secondary);
+  border: 1px solid var(--bur-border);
+}
+
+.bur-btn--ghost:hover {
+  background: var(--bur-bg);
+}
+
+.bur-btn--loading svg {
+  opacity: 0.7;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.bur-btn__spin {
+  animation: spin 0.9s linear infinite;
+}
+
+/* Dropzone */
+.bur-dropzone {
+  border: 2px dashed var(--bur-border);
+  border-radius: var(--bur-radius);
+  padding: 32px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  background: var(--bur-bg);
+}
+
+.bur-dropzone:hover,
+.bur-dropzone--active {
+  border-color: var(--bur-accent);
+  background: var(--bur-accent-light);
+}
+
+.bur-dropzone__icon {
+  color: var(--bur-text-muted);
+  margin-bottom: 10px;
+}
+
+.bur-dropzone--active .bur-dropzone__icon {
+  color: var(--bur-accent);
+}
+
+.bur-dropzone__text {
+  font-size: 0.85rem;
+  color: var(--bur-text-secondary);
+  margin: 0 0 4px;
+}
+
+.bur-dropzone__subtext {
+  font-size: 0.76rem;
+  color: var(--bur-text-muted);
+  margin: 0;
+}
+
+/* Confirm */
+.bur-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bur-confirm__file {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--bur-bg);
+  border: 1px solid var(--bur-border);
+  border-radius: 6px;
+}
+
+.bur-confirm__file svg {
+  color: var(--bur-accent);
+  flex-shrink: 0;
+}
+
+.bur-confirm__file-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.bur-confirm__filename {
+  font-size: 0.8rem;
+  font-family: var(--bur-mono);
+  color: var(--bur-text-primary);
+}
+
+.bur-confirm__filesize {
+  font-size: 0.72rem;
+  color: var(--bur-text-muted);
+}
+
+.bur-confirm__remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--bur-text-muted);
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+}
+
+.bur-confirm__remove:hover {
+  color: var(--bur-danger);
+  background: var(--bur-danger-bg);
+}
+
+.bur-confirm__warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  font-size: 0.78rem;
+  color: var(--bur-warning);
+  background: var(--bur-warning-bg);
+  border: 1px solid #fde68a;
+  padding: 10px 12px;
+  border-radius: 6px;
+  line-height: 1.4;
+}
+
+.bur-confirm__actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* Progress */
+.bur-progress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 0;
+  text-align: center;
+  color: var(--bur-accent);
+}
+
+.bur-progress__text {
+  font-size: 0.85rem;
+  color: var(--bur-text-secondary);
+  margin: 0;
+}
+
+.bur-progress__bar {
+  width: 100%;
+  height: 4px;
+  background: var(--bur-border-light);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.bur-progress__fill {
+  height: 100%;
+  background: var(--bur-accent);
+  border-radius: 2px;
+  animation: progress-anim 3s ease-in-out forwards;
+}
+
+@keyframes progress-anim {
+  from { width: 0% }
+  to { width: 95% }
+}
+
+.bur-progress__note {
+  font-size: 0.72rem;
+  color: var(--bur-text-muted);
+  margin: 0;
+}
+
+/* Result */
+.bur-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 24px 0;
+  text-align: center;
+}
+
+.bur-result--success {
+  color: var(--bur-success);
+}
+
+.bur-result--success p {
+  font-size: 0.85rem;
+  color: var(--bur-text-secondary);
+  margin: 0;
+}
+
+.bur-result--error {
+  color: var(--bur-danger);
+}
+
+.bur-result--error p {
+  font-size: 0.85rem;
+  color: var(--bur-text-secondary);
+  margin: 0;
+}
+
+/* History Table */
+.bur-history {
+  background: var(--bur-surface);
+  border: 1px solid var(--bur-border);
+  border-radius: var(--bur-radius);
+  box-shadow: var(--bur-shadow-sm);
+  overflow: hidden;
+}
+
+.bur-history__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--bur-border-light);
+}
+
+.bur-history__header h2 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--bur-text-primary);
+}
+
+.bur-history__count {
+  font-size: 0.76rem;
+  color: var(--bur-text-muted);
+  background: var(--bur-bg);
+  border: 1px solid var(--bur-border);
+  padding: 3px 9px;
+  border-radius: 20px;
+}
+
+.bur-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.bur-table thead tr {
+  background: var(--bur-bg);
+}
+
+.bur-table th {
+  padding: 10px 20px;
+  text-align: left;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--bur-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--bur-border-light);
+}
+
+.bur-table td {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--bur-border-light);
+  color: var(--bur-text-primary);
+  vertical-align: middle;
+}
+
+.bur-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.bur-table tbody tr:hover {
+  background: var(--bur-bg);
+}
+
+.bur-table__filename {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--bur-mono);
+  font-size: 0.76rem;
+  color: var(--bur-text-secondary) !important;
+}
+
+.bur-table__filename svg {
+  flex-shrink: 0;
+  color: var(--bur-text-muted);
+}
+
+.bur-table__mono {
+  font-family: var(--bur-mono);
+  font-size: 0.76rem;
+}
+
+.bur-table__date {
+  font-size: 0.78rem;
+  color: var(--bur-text-secondary);
+  white-space: nowrap;
+}
+
+/* Tags */
+.bur-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.bur-tag--success {
+  background: var(--bur-success-bg);
+  color: var(--bur-success);
+}
+
+.bur-tag--failed {
+  background: var(--bur-danger-bg);
+  color: var(--bur-danger);
+}
+
+.bur-tag--manual {
+  background: var(--bur-amber-light);
+  color: var(--bur-amber);
+}
+
+.bur-tag--scheduled {
+  background: var(--bur-accent-light);
+  color: var(--bur-accent);
+}
+
+.bur-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  color: var(--bur-accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: var(--bur-font);
+  font-weight: 500;
+  transition: background 0.15s;
+}
+
+.bur-link-btn:hover {
+  background: var(--bur-accent-light);
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .bur__actions {
+    grid-template-columns: 1fr;
+  }
+  .bur {
+    padding: 16px;
+  }
+}
+
+/* ── Message Banner ───────────────────────────────────────── */
+.bur__message {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.bur__message--success {
+  background-color: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.bur__message--error {
+  background-color: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+/* ── History Empty State ──────────────────────────────────── */
+.bur-history__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 48px 24px;
+  color: #9ca3af;
+  text-align: center;
+}
+
+.bur-history__empty svg {
+  opacity: 0.4;
+}
+
+.bur-history__empty p {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* ── History Loading State ────────────────────────────────── */
+.bur-history__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 32px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* ── Table User Column ────────────────────────────────────── */
+.bur-table__user {
+  font-size: 13px;
+  color: #6b7280;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Status Tags ──────────────────────────────────────────── */
+.bur-tag--restore {
+  background-color: #eff6ff;
+  color: #2563eb;
+  border: 1px solid #bfdbfe;
+}
+
+.bur-tag--success {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #f0fdf4;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.bur-tag--failed {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+
+/* ── Restore Result States ────────────────────────────────── */
+.bur-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 28px 16px;
+  border-radius: 10px;
+  text-align: center;
+  margin-top: 12px;
+}
+
+.bur-result p {
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.bur-result--success {
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #15803d;
+}
+
+.bur-result--success svg {
+  color: #16a34a;
+}
+
+.bur-result--error {
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+}
+
+.bur-result--error svg {
+  color: #dc2626;
+}
+
+/* ── Progress State ───────────────────────────────────────── */
+.bur-progress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 24px 16px;
+  text-align: center;
+  color: #4b5563;
+}
+
+.bur-progress__text {
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.bur-progress__bar {
+  width: 100%;
+  height: 6px;
+  background-color: #e5e7eb;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.bur-progress__fill {
+  height: 100%;
+  width: 60%;
+  background: linear-gradient(90deg, #3b82f6, #6366f1);
+  border-radius: 99px;
+  animation: bur-progress-anim 1.4s ease-in-out infinite;
+}
+
+@keyframes bur-progress-anim {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+.bur-progress__note {
+  font-size: 12px;
+  color: #9ca3af;
+  margin: 0;
+}

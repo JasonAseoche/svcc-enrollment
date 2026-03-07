@@ -1,47 +1,19 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import axios from 'axios';
 import { PlusCircle, Edit2, Trash2, Search, X, Save, AlertCircle, ArrowLeft, ChevronDown } from 'lucide-react';
 import '../../components/AdminLayout/ManageInstructors.css';
-
-// Mock data for departments
-const MOCK_DEPARTMENTS = [
-  { id: 1, name: 'Computer Science', instructor_count: 5 },
-  { id: 2, name: 'Information Technology', instructor_count: 3 },
-  { id: 3, name: 'Information Systems', instructor_count: 4 },
-];
-
-// Mock data for instructors
-const MOCK_INSTRUCTORS = {
-  1: [ // Computer Science
-    { id: 1, instructorId: 'INS-2024-001', firstName: 'John', lastName: 'Doe', fields: 'Programming, Algorithms', email: 'john.doe@example.com', departmentId: 1 },
-    { id: 2, instructorId: 'INS-2024-002', firstName: 'Jane', lastName: 'Smith', fields: 'Database, Data Structures', email: 'jane.smith@example.com', departmentId: 1 },
-    { id: 3, instructorId: 'INS-2024-003', firstName: 'Michael', lastName: 'Johnson', fields: 'Web Development, UI/UX', email: 'michael.j@example.com', departmentId: 1 },
-    { id: 4, instructorId: 'INS-2024-004', firstName: 'Sarah', lastName: 'Williams', fields: 'Machine Learning, AI', email: 'sarah.w@example.com', departmentId: 1 },
-    { id: 5, instructorId: 'INS-2024-005', firstName: 'David', lastName: 'Brown', fields: 'Software Engineering', email: 'david.b@example.com', departmentId: 1 },
-  ],
-  2: [ // Information Technology
-    { id: 6, instructorId: 'INS-2024-006', firstName: 'Emily', lastName: 'Davis', fields: 'Network Security, Cybersecurity', email: 'emily.d@example.com', departmentId: 2 },
-    { id: 7, instructorId: 'INS-2024-007', firstName: 'Robert', lastName: 'Miller', fields: 'Cloud Computing, DevOps', email: 'robert.m@example.com', departmentId: 2 },
-    { id: 8, instructorId: 'INS-2024-008', firstName: 'Lisa', lastName: 'Wilson', fields: 'IT Infrastructure', email: 'lisa.w@example.com', departmentId: 2 },
-  ],
-  3: [ // Information Systems
-    { id: 9, instructorId: 'INS-2024-009', firstName: 'James', lastName: 'Moore', fields: 'Systems Analysis, Business Intelligence', email: 'james.m@example.com', departmentId: 3 },
-    { id: 10, instructorId: 'INS-2024-010', firstName: 'Patricia', lastName: 'Taylor', fields: 'Enterprise Systems, ERP', email: 'patricia.t@example.com', departmentId: 3 },
-    { id: 11, instructorId: 'INS-2024-011', firstName: 'Daniel', lastName: 'Anderson', fields: 'Data Analytics, Business Process', email: 'daniel.a@example.com', departmentId: 3 },
-    { id: 12, instructorId: 'INS-2024-012', firstName: 'Nancy', lastName: 'Thomas', fields: 'Project Management, Agile', email: 'nancy.t@example.com', departmentId: 3 },
-  ],
-};
 
 // Memoized instructor row component
 const InstructorRow = React.memo(({ instructor, onEdit, onDelete }) => (
   <tr>
     <td data-label="Instructor ID: ">
-      <div className="svcc-manage-instructor-id">{instructor.instructorId}</div>
+      <div className="svcc-manage-instructor-id">{instructor.instructor_id}</div>
     </td>
     <td data-label="Name: ">
       <div className="svcc-manage-instructor-name">{instructor.firstName} {instructor.lastName}</div>
     </td>
-    <td data-label="Fields: ">
-      <div className="svcc-manage-instructor-fields">{instructor.fields || 'N/A'}</div>
+    <td data-label="Email: ">
+      <div className="svcc-manage-instructor-email">{instructor.email || 'N/A'}</div>
     </td>
     <td data-label="Actions: " className="svcc-manage-instructor-actions-cell">
       <div className="svcc-manage-instructor-actions-buttons">
@@ -53,7 +25,7 @@ const InstructorRow = React.memo(({ instructor, onEdit, onDelete }) => (
           <Edit2 size={18} />
         </button>
         <button
-          onClick={() => onDelete(instructor.id)}
+          onClick={() => onDelete(instructor.user_id)}
           className="svcc-manage-instructor-action-button svcc-manage-instructor-delete-button"
           title="Delete instructor"
         >
@@ -67,53 +39,119 @@ const InstructorRow = React.memo(({ instructor, onEdit, onDelete }) => (
 InstructorRow.displayName = 'InstructorRow';
 
 const ManageInstructors = () => {
-  const [currentView, setCurrentView] = useState('list'); // 'list' or 'view'
+  const [currentView, setCurrentView] = useState('list');
   const [selectedDepartment, setSelectedDepartment] = useState(null);
   const [departments, setDepartments] = useState([]);
   const [instructors, setInstructors] = useState([]);
   const [filteredInstructors, setFilteredInstructors] = useState([]);
+  const [programHeads, setProgramHeads] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  
-  // ID counters for new items
-  const [nextDepartmentId, setNextDepartmentId] = useState(4);
-  const [nextInstructorId, setNextInstructorId] = useState(13);
   
   // Modal states
   const [showDepartmentModal, setShowDepartmentModal] = useState(false);
   const [showInstructorModal, setShowInstructorModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showAssignHeadModal, setShowAssignHeadModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
-  const [deleteType, setDeleteType] = useState(''); // 'department' or 'instructor'
+  const [deleteType, setDeleteType] = useState('');
   
   // Form states
-  const [modalMode, setModalMode] = useState('add'); // 'add' or 'edit'
+  const [modalMode, setModalMode] = useState('add');
   const [currentDepartment, setCurrentDepartment] = useState({
-    id: '',
-    name: ''
+    department_id: '',
+    department_name: '',
+    department_code: ''
   });
   const [currentInstructor, setCurrentInstructor] = useState({
-    id: '',
-    instructorId: '',
+    user_id: '',
+    instructor_id: '',
     firstName: '',
     lastName: '',
-    fields: '',
+    birthday: '',
     email: '',
     password: ''
   });
+  const [selectedHeadId, setSelectedHeadId] = useState('');
   
-  // Search and filter states
+  // Search states
   const [departmentSearchTerm, setDepartmentSearchTerm] = useState('');
   const [instructorSearchTerm, setInstructorSearchTerm] = useState('');
-  const [sortOrder, setSortOrder] = useState('latest');
-  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
   
   // Message state
   const [message, setMessage] = useState({ text: '', type: '' });
 
-  // Initialize with mock data
+  const API_URL = 'http://localhost/svcc-enrollment';
+
+  const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+  const auditHeaders = {
+    'Content-Type': 'application/json',
+    'X-User-Email': storedUser?.email || storedUser?.user?.email || '',
+    'X-User-Role':  storedUser?.role  || storedUser?.user?.role  || '',
+  };
+
+  // Fetch departments
+  const fetchDepartments = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get(`${API_URL}/departments.php`);
+      if (Array.isArray(response.data)) {
+        setDepartments(response.data);
+        setIsError(false);
+      } else {
+        console.error('API returned non-array:', response.data);
+        setDepartments([]);
+        setIsError(true);
+      }
+    } catch (error) {
+      console.error('Error fetching departments:', error);
+      setDepartments([]);
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Fetch instructors for specific department
+  const fetchInstructors = async (departmentCode) => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get(`${API_URL}/fetch_accounts.php?role=instructor`);
+      if (Array.isArray(response.data)) {
+        const deptInstructors = response.data.filter(
+          inst => inst.department === departmentCode
+        );
+        setInstructors(deptInstructors);
+        setIsError(false);
+      } else {
+        console.error('API returned non-array:', response.data);
+        setInstructors([]);
+        setIsError(true);
+      }
+    } catch (error) {
+      console.error('Error fetching instructors:', error);
+      setInstructors([]);
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Fetch program heads for assignment
+  const fetchProgramHeads = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/fetch_accounts.php?role=program_head`);
+      if (Array.isArray(response.data)) {
+        setProgramHeads(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching program heads:', error);
+    }
+  };
+
   useEffect(() => {
-    setDepartments(MOCK_DEPARTMENTS);
+    fetchDepartments();
+    fetchProgramHeads();
   }, []);
 
   // Apply filters to instructors
@@ -121,56 +159,62 @@ const ManageInstructors = () => {
     if (currentView === 'view') {
       applyFilters();
     }
-  }, [instructorSearchTerm, instructors, sortOrder]);
+  }, [instructorSearchTerm, instructors]);
 
   const applyFilters = useCallback(() => {
     let filtered = [...instructors];
 
-    // Apply search filter
     if (instructorSearchTerm) {
       const searchLower = instructorSearchTerm.toLowerCase();
       filtered = filtered.filter(instructor => 
-        (instructor.instructorId || '').toLowerCase().includes(searchLower) ||
+        (instructor.instructor_id || '').toLowerCase().includes(searchLower) ||
         (instructor.firstName || '').toLowerCase().includes(searchLower) ||
         (instructor.lastName || '').toLowerCase().includes(searchLower) ||
-        (instructor.fields || '').toLowerCase().includes(searchLower)
+        (instructor.email || '').toLowerCase().includes(searchLower)
       );
     }
 
-    // Apply sort order
-    filtered.sort((a, b) => {
-      const aValue = a.id || 0;
-      const bValue = b.id || 0;
-      
-      if (sortOrder === 'latest') {
-        return bValue - aValue;
-      } else {
-        return aValue - bValue;
-      }
-    });
+    filtered.sort((a, b) => (b.user_id || 0) - (a.user_id || 0));
 
     setFilteredInstructors(filtered);
-  }, [instructors, instructorSearchTerm, sortOrder]);
+  }, [instructors, instructorSearchTerm]);
 
-  // Generate random password
-  const generateRandomPassword = useCallback(() => {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
-    let password = '';
-    for (let i = 0; i < 12; i++) {
-      password += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return password;
+  // Generate password based on lastname + birthday
+  const generatePassword = useCallback((lastName, birthday) => {
+    if (!lastName || !birthday) return '';
+    
+    const date = new Date(birthday);
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const year = date.getFullYear();
+    
+    return `${lastName.toLowerCase()}${month}${day}${year}`;
   }, []);
+
+  // Auto-generate password when lastName or birthday changes
+  useEffect(() => {
+    if (modalMode === 'add' && currentInstructor.lastName && currentInstructor.birthday) {
+      const autoPassword = generatePassword(currentInstructor.lastName, currentInstructor.birthday);
+      setCurrentInstructor(prev => ({
+        ...prev,
+        password: autoPassword
+      }));
+    }
+  }, [currentInstructor.lastName, currentInstructor.birthday, modalMode, generatePassword]);
 
   // Department handlers
   const openAddDepartmentModal = useCallback(() => {
-    setCurrentDepartment({ id: '', name: '' });
+    setCurrentDepartment({ department_id: '', department_name: '', department_code: '' });
     setModalMode('add');
     setShowDepartmentModal(true);
   }, []);
 
   const openEditDepartmentModal = useCallback((department) => {
-    setCurrentDepartment(department);
+    setCurrentDepartment({
+      department_id: department.department_id,
+      department_name: department.department_name,
+      department_code: department.department_code
+    });
     setModalMode('edit');
     setShowDepartmentModal(true);
   }, []);
@@ -178,54 +222,61 @@ const ManageInstructors = () => {
   const handleDepartmentSubmit = async (e) => {
     e.preventDefault();
     
-    if (!currentDepartment.name) {
-      setMessage({ text: 'Please enter department name', type: 'error' });
+    if (!currentDepartment.department_name || !currentDepartment.department_code) {
+      setMessage({ text: 'Please fill all fields', type: 'error' });
       return;
     }
     
-    if (modalMode === 'add') {
-      // Add new department
-      const newDept = {
-        id: nextDepartmentId,
-        name: currentDepartment.name,
-        instructor_count: 0
-      };
-      setDepartments([...departments, newDept]);
-      setNextDepartmentId(nextDepartmentId + 1);
-      setMessage({ text: 'Department added successfully', type: 'success' });
-    } else {
-      // Edit existing department
-      setDepartments(departments.map(dept => 
-        dept.id === currentDepartment.id 
-          ? { ...dept, name: currentDepartment.name }
-          : dept
-      ));
-      setMessage({ text: 'Department updated successfully', type: 'success' });
-      
-      // Update selected department if viewing it
-      if (selectedDepartment && selectedDepartment.id === currentDepartment.id) {
-        setSelectedDepartment({ ...selectedDepartment, name: currentDepartment.name });
+    try {
+      if (modalMode === 'add') {
+        const response = await axios.post(`${API_URL}/departments.php`, {
+          department_name: currentDepartment.department_name,
+          department_code: currentDepartment.department_code
+        });
+        
+        if (response.data.success) {
+          setMessage({ text: 'Department added successfully', type: 'success' });
+          fetchDepartments();
+        } else {
+          setMessage({ text: response.data.message, type: 'error' });
+        }
+      } else {
+        const response = await axios.put(`${API_URL}/departments.php`, {
+          department_id: currentDepartment.department_id,
+          department_name: currentDepartment.department_name
+        });
+        
+        if (response.data.success) {
+          setMessage({ text: 'Department updated successfully', type: 'success' });
+          fetchDepartments();
+          if (selectedDepartment?.department_id === currentDepartment.department_id) {
+            setSelectedDepartment({...selectedDepartment, department_name: currentDepartment.department_name});
+          }
+        } else {
+          setMessage({ text: response.data.message, type: 'error' });
+        }
       }
+      setShowDepartmentModal(false);
+    } catch (error) {
+      console.error('Error saving department:', error);
+      setMessage({ text: 'An error occurred', type: 'error' });
     }
-    
-    setShowDepartmentModal(false);
   };
 
   // Instructor handlers
   const openAddInstructorModal = useCallback(() => {
-    const generatedPassword = generateRandomPassword();
     setCurrentInstructor({
-      id: '',
-      instructorId: '',
+      user_id: '',
+      instructor_id: '',
       firstName: '',
       lastName: '',
-      fields: '',
+      birthday: '',
       email: '',
-      password: generatedPassword
+      password: ''
     });
     setModalMode('add');
     setShowInstructorModal(true);
-  }, [generateRandomPassword]);
+  }, []);
 
   const openEditInstructorModal = useCallback((instructor) => {
     setCurrentInstructor({
@@ -239,8 +290,8 @@ const ManageInstructors = () => {
   const handleInstructorSubmit = async (e) => {
     e.preventDefault();
     
-    if (!currentInstructor.instructorId || !currentInstructor.firstName || 
-        !currentInstructor.lastName || !currentInstructor.fields || !currentInstructor.email) {
+    if (!currentInstructor.firstName || !currentInstructor.lastName || 
+        !currentInstructor.birthday || !currentInstructor.email) {
       setMessage({ text: 'Please fill all required fields', type: 'error' });
       return;
     }
@@ -251,40 +302,60 @@ const ManageInstructors = () => {
       return;
     }
     
-    if (modalMode === 'add' && (!currentInstructor.password || currentInstructor.password.length < 12)) {
-      setMessage({ text: 'Password must be at least 12 characters', type: 'error' });
+    if (modalMode === 'add' && !currentInstructor.password) {
+      setMessage({ text: 'Password could not be generated', type: 'error' });
       return;
     }
     
-    if (modalMode === 'add') {
-      // Add new instructor
-      const newInstructor = {
+    try {
+      const url = modalMode === 'add' ? '/add_account.php' : '/update_accounts.php';
+      const payload = {
         ...currentInstructor,
-        id: nextInstructorId,
-        departmentId: selectedDepartment.id
+        role: 'instructor',
+        department: selectedDepartment.department_code
       };
-      setInstructors([...instructors, newInstructor]);
-      setNextInstructorId(nextInstructorId + 1);
       
-      // Update department instructor count
-      setDepartments(departments.map(dept =>
-        dept.id === selectedDepartment.id
-          ? { ...dept, instructor_count: dept.instructor_count + 1 }
-          : dept
-      ));
+      const response = await axios.post(`${API_URL}${url}`, payload, { headers: auditHeaders });
       
-      setMessage({ text: 'Instructor added successfully', type: 'success' });
-    } else {
-      // Edit existing instructor
-      setInstructors(instructors.map(inst =>
-        inst.id === currentInstructor.id
-          ? { ...inst, ...currentInstructor }
-          : inst
-      ));
-      setMessage({ text: 'Instructor updated successfully', type: 'success' });
+      if (response.data.success) {
+        setMessage({ text: response.data.message, type: 'success' });
+        setShowInstructorModal(false);
+        fetchInstructors(selectedDepartment.department_code);
+        fetchDepartments();
+      } else {
+        setMessage({ text: response.data.message, type: 'error' });
+      }
+    } catch (error) {
+      console.error('Error saving instructor:', error);
+      setMessage({ text: 'An error occurred', type: 'error' });
     }
-    
-    setShowInstructorModal(false);
+  };
+
+  // Assign program head
+  const openAssignHeadModal = useCallback((department) => {
+    setCurrentDepartment(department);
+    setSelectedHeadId(department.assigned_head || '');
+    setShowAssignHeadModal(true);
+  }, []);
+
+  const handleAssignHead = async () => {
+    try {
+      const response = await axios.put(`${API_URL}/departments.php`, {
+        department_id: currentDepartment.department_id,
+        assigned_head: selectedHeadId ? parseInt(selectedHeadId) : 0
+      });
+      
+      if (response.data.success) {
+        setMessage({ text: 'Program head assigned successfully', type: 'success' });
+        fetchDepartments();
+        setShowAssignHeadModal(false);
+      } else {
+        setMessage({ text: response.data.message, type: 'error' });
+      }
+    } catch (error) {
+      console.error('Error assigning head:', error);
+      setMessage({ text: 'An error occurred', type: 'error' });
+    }
   };
 
   // Delete handlers
@@ -295,43 +366,53 @@ const ManageInstructors = () => {
   }, []);
 
   const handleDelete = async () => {
-    if (deleteType === 'department') {
-      // Delete department
-      setDepartments(departments.filter(dept => dept.id !== deleteId));
-      setMessage({ text: 'Department deleted successfully', type: 'success' });
-      
-      if (selectedDepartment && selectedDepartment.id === deleteId) {
-        setCurrentView('list');
-        setSelectedDepartment(null);
+    try {
+      if (deleteType === 'department') {
+        const response = await axios.delete(`${API_URL}/departments.php`, {
+          data: { department_id: deleteId },
+          headers: { 'Content-Type': 'application/json' }
+        });
+        
+        if (response.data.success) {
+          setMessage({ text: 'Department deleted successfully', type: 'success' });
+          fetchDepartments();
+          if (selectedDepartment?.department_id === deleteId) {
+            setCurrentView('list');
+            setSelectedDepartment(null);
+          }
+        } else {
+          setMessage({ text: response.data.message, type: 'error' });
+        }
+      } else {
+        const response = await axios.post(`${API_URL}/delete_account.php`,
+          { user_id: deleteId },
+          { headers: auditHeaders }  // ← replace existing headers
+        );
+        
+        if (response.data.success) {
+          setMessage({ text: 'Instructor deleted successfully', type: 'success' });
+          fetchInstructors(selectedDepartment.department_code);
+          fetchDepartments();
+        } else {
+          setMessage({ text: response.data.message, type: 'error' });
+        }
       }
-    } else {
-      // Delete instructor
-      setInstructors(instructors.filter(inst => inst.id !== deleteId));
-      
-      // Update department instructor count
-      setDepartments(departments.map(dept =>
-        dept.id === selectedDepartment.id
-          ? { ...dept, instructor_count: Math.max(0, dept.instructor_count - 1) }
-          : dept
-      ));
-      
-      setMessage({ text: 'Instructor deleted successfully', type: 'success' });
+    } catch (error) {
+      console.error('Error deleting:', error);
+      setMessage({ text: 'An error occurred', type: 'error' });
+    } finally {
+      setShowDeleteConfirm(false);
+      setDeleteId(null);
+      setDeleteType('');
     }
-    
-    setShowDeleteConfirm(false);
-    setDeleteId(null);
-    setDeleteType('');
   };
 
   // View handlers
   const handleViewDepartment = (department) => {
     setSelectedDepartment(department);
     setCurrentView('view');
-    // Load instructors from mock data
-    const deptInstructors = MOCK_INSTRUCTORS[department.id] || [];
-    setInstructors(deptInstructors);
+    fetchInstructors(department.department_code);
     setInstructorSearchTerm('');
-    setSortOrder('latest');
   };
 
   const handleBackToList = () => {
@@ -340,32 +421,20 @@ const ManageInstructors = () => {
     setInstructorSearchTerm('');
   };
 
-  const handleFilterChange = useCallback((value) => {
-    setSortOrder(value);
-    setShowFilterDropdown(false);
-  }, []);
-
-  const getFilterDisplayText = useMemo(() => {
-    return sortOrder === 'latest' ? 'Latest' : 'Oldest';
-  }, [sortOrder]);
-
-  // Filter departments by search term
+  // Filter departments by search
   const filteredDepartments = useMemo(() => {
-    // Ensure departments is always an array
     const deptArray = Array.isArray(departments) ? departments : [];
     if (!departmentSearchTerm) return deptArray;
     const searchLower = departmentSearchTerm.toLowerCase();
     return deptArray.filter(dept => 
-      dept.name.toLowerCase().includes(searchLower)
+      dept.department_name.toLowerCase().includes(searchLower)
     );
   }, [departments, departmentSearchTerm]);
 
   // Clear message after 5 seconds
   useEffect(() => {
     if (message.text) {
-      const timer = setTimeout(() => {
-        setMessage({ text: '', type: '' });
-      }, 5000);
+      const timer = setTimeout(() => setMessage({ text: '', type: '' }), 5000);
       return () => clearTimeout(timer);
     }
   }, [message]);
@@ -387,18 +456,12 @@ const ManageInstructors = () => {
               />
               <Search className="svcc-manage-instructor-search-icon" size={18} />
               {departmentSearchTerm && (
-                <button 
-                  onClick={() => setDepartmentSearchTerm('')}
-                  className="svcc-manage-instructor-search-clear"
-                >
+                <button onClick={() => setDepartmentSearchTerm('')} className="svcc-manage-instructor-search-clear">
                   <X size={18} />
                 </button>
               )}
             </div>
-            <button
-              onClick={openAddDepartmentModal}
-              className="svcc-manage-instructor-add-button"
-            >
+            <button onClick={openAddDepartmentModal} className="svcc-manage-instructor-add-button">
               <PlusCircle size={18} className="svcc-manage-instructor-button-icon" />
               Add Department
             </button>
@@ -423,36 +486,22 @@ const ManageInstructors = () => {
           <div className="svcc-manage-instructor-error-container">
             <AlertCircle size={40} className="svcc-manage-instructor-error-icon" />
             <p className="svcc-manage-instructor-error-text">Failed to load departments</p>
-            <button 
-              onClick={() => {
-                setIsError(false);
-                setDepartments(MOCK_DEPARTMENTS);
-              }}
-              className="svcc-manage-instructor-retry-button"
-            >
-              Try Again
-            </button>
+            <button onClick={fetchDepartments} className="svcc-manage-instructor-retry-button">Try Again</button>
           </div>
         ) : filteredDepartments.length === 0 ? (
           <div className="svcc-manage-instructor-empty-container">
             {departmentSearchTerm ? (
               <>
-                <p className="svcc-manage-instructor-empty-text">No departments found matching "{departmentSearchTerm}"</p>
-                <button 
-                  onClick={() => setDepartmentSearchTerm('')}
-                  className="svcc-manage-instructor-empty-action"
-                >
+                <p className="svcc-manage-instructor-empty-text">No departments found</p>
+                <button onClick={() => setDepartmentSearchTerm('')} className="svcc-manage-instructor-empty-action">
                   Clear search
                 </button>
               </>
             ) : (
               <>
                 <p className="svcc-manage-instructor-empty-text">No departments available</p>
-                <button 
-                  onClick={openAddDepartmentModal}
-                  className="svcc-manage-instructor-empty-action"
-                >
-                  <PlusCircle size={16} className="svcc-manage-instructor-button-icon-small" />
+                <button onClick={openAddDepartmentModal} className="svcc-manage-instructor-empty-action">
+                  <PlusCircle size={16} />
                   Add your first department
                 </button>
               </>
@@ -461,9 +510,9 @@ const ManageInstructors = () => {
         ) : (
           <div className="svcc-manage-instructor-departments-grid">
             {filteredDepartments.map((department) => (
-              <div key={department.id} className="svcc-manage-instructor-department-card">
-               <div className="svcc-manage-instructor-card-header">
-                  <h3 className="svcc-manage-instructor-department-name">{department.name}</h3>
+              <div key={department.department_id} className="svcc-manage-instructor-department-card">
+                <div className="svcc-manage-instructor-card-header">
+                  <h3 className="svcc-manage-instructor-department-name">{department.department_name}</h3>
                   <div className="svcc-manage-instructor-card-actions">
                     <button
                       onClick={() => handleViewDepartment(department)}
@@ -473,15 +522,14 @@ const ManageInstructors = () => {
                     </button>
                     <div className="svcc-manage-instructor-manage-dropdown">
                       <button
-                        onClick={() => {
-                          const currentOpen = document.querySelector('.svcc-manage-instructor-manage-dropdown.open');
-                          if (currentOpen && currentOpen !== document.querySelector(`[data-dept-id="${department.id}"]`)?.closest('.svcc-manage-instructor-manage-dropdown')) {
-                            currentOpen.classList.remove('open');
-                          }
-                          document.querySelector(`[data-dept-id="${department.id}"]`)?.closest('.svcc-manage-instructor-manage-dropdown')?.classList.toggle('open');
+                        onClick={(e) => {
+                          const dropdown = e.currentTarget.closest('.svcc-manage-instructor-manage-dropdown');
+                          document.querySelectorAll('.svcc-manage-instructor-manage-dropdown.open').forEach(d => {
+                            if (d !== dropdown) d.classList.remove('open');
+                          });
+                          dropdown.classList.toggle('open');
                         }}
                         className="svcc-manage-instructor-btn svcc-manage-instructor-btn-manage"
-                        data-dept-id={department.id}
                       >
                         Manage
                         <ChevronDown size={16} className="svcc-manage-instructor-manage-chevron" />
@@ -489,7 +537,7 @@ const ManageInstructors = () => {
                       <div className="svcc-manage-instructor-manage-dropdown-menu">
                         <button
                           onClick={() => {
-                            document.querySelector(`[data-dept-id="${department.id}"]`)?.closest('.svcc-manage-instructor-manage-dropdown')?.classList.remove('open');
+                            document.querySelectorAll('.svcc-manage-instructor-manage-dropdown.open').forEach(d => d.classList.remove('open'));
                             openEditDepartmentModal(department);
                           }}
                           className="svcc-manage-instructor-manage-dropdown-item"
@@ -499,8 +547,8 @@ const ManageInstructors = () => {
                         </button>
                         <button
                           onClick={() => {
-                            document.querySelector(`[data-dept-id="${department.id}"]`)?.closest('.svcc-manage-instructor-manage-dropdown')?.classList.remove('open');
-                            /* Add your assign program head handler here */
+                            document.querySelectorAll('.svcc-manage-instructor-manage-dropdown.open').forEach(d => d.classList.remove('open'));
+                            openAssignHeadModal(department);
                           }}
                           className="svcc-manage-instructor-manage-dropdown-item"
                         >
@@ -509,8 +557,8 @@ const ManageInstructors = () => {
                         </button>
                         <button
                           onClick={() => {
-                            document.querySelector(`[data-dept-id="${department.id}"]`)?.closest('.svcc-manage-instructor-manage-dropdown')?.classList.remove('open');
-                            confirmDelete(department.id, 'department');
+                            document.querySelectorAll('.svcc-manage-instructor-manage-dropdown.open').forEach(d => d.classList.remove('open'));
+                            confirmDelete(department.department_id, 'department');
                           }}
                           className="svcc-manage-instructor-manage-dropdown-item svcc-manage-instructor-manage-dropdown-item-delete"
                         >
@@ -523,8 +571,14 @@ const ManageInstructors = () => {
                 </div>
                 <div className="svcc-manage-instructor-card-content">
                   <div className="svcc-manage-instructor-info-item">
-                    <span className="svcc-manage-instructor-info-label">No. of Instructors:</span>
+                    <span className="svcc-manage-instructor-info-label">Instructors:</span>
                     <span className="svcc-manage-instructor-info-value">{department.instructor_count || 0}</span>
+                  </div>
+                  <div className="svcc-manage-instructor-info-item">
+                    <span className="svcc-manage-instructor-info-label">Program Head:</span>
+                    <span className="svcc-manage-instructor-info-value">
+                      {department.assigned_head_name || 'Not Assigned'}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -541,13 +595,10 @@ const ManageInstructors = () => {
       <div className="svcc-manage-instructor-header-card">
         <div className="svcc-manage-instructor-header-content">
           <div className="svcc-manage-instructor-title-with-back">
-            <button
-              onClick={handleBackToList}
-              className="svcc-manage-instructor-back-button"
-            >
+            <button onClick={handleBackToList} className="svcc-manage-instructor-back-button">
               <ArrowLeft size={20} />
             </button>
-            <h1 className="svcc-manage-instructor-page-title">{selectedDepartment?.name}</h1>
+            <h1 className="svcc-manage-instructor-page-title">{selectedDepartment?.department_name}</h1>
           </div>
           <div className="svcc-manage-instructor-header-actions">
             <div className="svcc-manage-instructor-search-container">
@@ -560,56 +611,12 @@ const ManageInstructors = () => {
               />
               <Search className="svcc-manage-instructor-search-icon" size={18} />
               {instructorSearchTerm && (
-                <button 
-                  onClick={() => setInstructorSearchTerm('')}
-                  className="svcc-manage-instructor-search-clear"
-                >
+                <button onClick={() => setInstructorSearchTerm('')} className="svcc-manage-instructor-search-clear">
                   <X size={18} />
                 </button>
               )}
             </div>
-
-            {/* Mobile Filter */}
-            <div className="svcc-manage-instructor-mobile-filter-container">
-              <button
-                className="svcc-manage-instructor-filter-button"
-                onClick={() => setShowFilterDropdown(!showFilterDropdown)}
-              >
-                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clipRule="evenodd" />
-                </svg>
-                <span className="svcc-manage-instructor-filter-text">{getFilterDisplayText}</span>
-                <ChevronDown
-                  size={12}
-                  className={`svcc-manage-instructor-filter-chevron ${showFilterDropdown ? 'svcc-manage-instructor-filter-chevron-open' : ''}`}
-                />
-              </button>
-              
-              {showFilterDropdown && (
-                <div className="svcc-manage-instructor-filter-dropdown">
-                  <div className="svcc-manage-instructor-filter-section">
-                    <h4 className="svcc-manage-instructor-filter-section-title">Sort</h4>
-                    <button
-                      className={`svcc-manage-instructor-filter-option ${sortOrder === 'latest' ? 'svcc-manage-instructor-filter-option-active' : ''}`}
-                      onClick={() => handleFilterChange('latest')}
-                    >
-                      Latest
-                    </button>
-                    <button
-                      className={`svcc-manage-instructor-filter-option ${sortOrder === 'oldest' ? 'svcc-manage-instructor-filter-option-active' : ''}`}
-                      onClick={() => handleFilterChange('oldest')}
-                    >
-                      Oldest
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <button
-              onClick={openAddInstructorModal}
-              className="svcc-manage-instructor-add-button"
-            >
+            <button onClick={openAddInstructorModal} className="svcc-manage-instructor-add-button">
               <PlusCircle size={18} className="svcc-manage-instructor-button-icon" />
               Add Instructor
             </button>
@@ -634,14 +641,7 @@ const ManageInstructors = () => {
           <div className="svcc-manage-instructor-error-container">
             <AlertCircle size={40} className="svcc-manage-instructor-error-icon" />
             <p className="svcc-manage-instructor-error-text">Failed to load instructors</p>
-            <button 
-              onClick={() => {
-                setIsError(false);
-                const deptInstructors = MOCK_INSTRUCTORS[selectedDepartment.id] || [];
-                setInstructors(deptInstructors);
-              }}
-              className="svcc-manage-instructor-retry-button"
-            >
+            <button onClick={() => fetchInstructors(selectedDepartment.department_code)} className="svcc-manage-instructor-retry-button">
               Try Again
             </button>
           </div>
@@ -649,22 +649,16 @@ const ManageInstructors = () => {
           <div className="svcc-manage-instructor-empty-container">
             {instructorSearchTerm ? (
               <>
-                <p className="svcc-manage-instructor-empty-text">No instructors found matching current filters</p>
-                <button 
-                  onClick={() => setInstructorSearchTerm('')}
-                  className="svcc-manage-instructor-empty-action"
-                >
-                  Clear filters
+                <p className="svcc-manage-instructor-empty-text">No instructors found</p>
+                <button onClick={() => setInstructorSearchTerm('')} className="svcc-manage-instructor-empty-action">
+                  Clear search
                 </button>
               </>
             ) : (
               <>
                 <p className="svcc-manage-instructor-empty-text">No instructors available</p>
-                <button 
-                  onClick={openAddInstructorModal}
-                  className="svcc-manage-instructor-empty-action"
-                >
-                  <PlusCircle size={16} className="svcc-manage-instructor-button-icon-small" />
+                <button onClick={openAddInstructorModal} className="svcc-manage-instructor-empty-action">
+                  <PlusCircle size={16} />
                   Add your first instructor
                 </button>
               </>
@@ -677,53 +671,14 @@ const ManageInstructors = () => {
                 <tr>
                   <th>Instructor ID</th>
                   <th>Name</th>
-                  <th>Fields</th>
-                  <th className="svcc-manage-instructor-actions-header">
-                    <div className="svcc-manage-instructor-filter-header">
-                      Actions
-                      <div className="svcc-manage-instructor-filter-container">
-                        <button
-                          className="svcc-manage-instructor-filter-button"
-                          onClick={() => setShowFilterDropdown(!showFilterDropdown)}
-                        >
-                          <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clipRule="evenodd" />
-                          </svg>
-                          <span className="svcc-manage-instructor-filter-text">{getFilterDisplayText}</span>
-                          <ChevronDown
-                            size={12}
-                            className={`svcc-manage-instructor-filter-chevron ${showFilterDropdown ? 'svcc-manage-instructor-filter-chevron-open' : ''}`}
-                          />
-                        </button>
-                        
-                        {showFilterDropdown && (
-                          <div className="svcc-manage-instructor-filter-dropdown">
-                            <div className="svcc-manage-instructor-filter-section">
-                              <h4 className="svcc-manage-instructor-filter-section-title">Sort</h4>
-                              <button
-                                className={`svcc-manage-instructor-filter-option ${sortOrder === 'latest' ? 'svcc-manage-instructor-filter-option-active' : ''}`}
-                                onClick={() => handleFilterChange('latest')}
-                              >
-                                Latest
-                              </button>
-                              <button
-                                className={`svcc-manage-instructor-filter-option ${sortOrder === 'oldest' ? 'svcc-manage-instructor-filter-option-active' : ''}`}
-                                onClick={() => handleFilterChange('oldest')}
-                              >
-                                Oldest
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </th>
+                  <th>Email</th>
+                  <th className="svcc-manage-instructor-actions-header">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredInstructors.map((instructor) => (
                   <InstructorRow
-                    key={instructor.id}
+                    key={instructor.user_id}
                     instructor={instructor}
                     onEdit={openEditInstructorModal}
                     onDelete={(id) => confirmDelete(id, 'instructor')}
@@ -757,15 +712,32 @@ const ManageInstructors = () => {
                   <input
                     type="text"
                     id="departmentName"
-                    name="name"
-                    value={currentDepartment.name}
-                    onChange={(e) => setCurrentDepartment({...currentDepartment, name: e.target.value})}
+                    value={currentDepartment.department_name}
+                    onChange={(e) => setCurrentDepartment({...currentDepartment, department_name: e.target.value})}
                     className="svcc-manage-instructor-form-input"
                     placeholder="e.g., Computer Science"
                     required
                   />
                 </div>
-                    
+                {modalMode === 'add' && (
+                  <div className="svcc-manage-instructor-form-group">
+                    <label htmlFor="departmentCode" className="svcc-manage-instructor-form-label">
+                      Department Code*
+                    </label>
+                    <select
+                      id="departmentCode"
+                      value={currentDepartment.department_code}
+                      onChange={(e) => setCurrentDepartment({...currentDepartment, department_code: e.target.value})}
+                      className="svcc-manage-instructor-form-select"
+                      required
+                    >
+                      <option value="">Select Code</option>
+                      <option value="bscs">BSCS</option>
+                      <option value="bsit">BSIT</option>
+                      <option value="bsis">BSIS</option>
+                    </select>
+                  </div>
+                )}
                 <div className="svcc-manage-instructor-modal-actions">
                   <button
                     type="button"
@@ -774,11 +746,8 @@ const ManageInstructors = () => {
                   >
                     Cancel
                   </button>
-                  <button
-                    type="submit"
-                    className="svcc-manage-instructor-button svcc-manage-instructor-button-primary"
-                  >
-                    <Save size={18} className="svcc-manage-instructor-button-icon" />
+                  <button type="submit" className="svcc-manage-instructor-button svcc-manage-instructor-button-primary">
+                    <Save size={18} />
                     {modalMode === 'add' ? 'Create Department' : 'Update Department'}
                   </button>
                 </div>
@@ -804,9 +773,8 @@ const ManageInstructors = () => {
                   <input
                     type="text"
                     id="instructorId"
-                    name="instructorId"
-                    value={currentInstructor.instructorId}
-                    onChange={(e) => setCurrentInstructor({...currentInstructor, instructorId: e.target.value})}
+                    value={currentInstructor.instructor_id}
+                    onChange={(e) => setCurrentInstructor({...currentInstructor, instructor_id: e.target.value})}
                     className="svcc-manage-instructor-form-input"
                     placeholder="e.g., INS-2024-001"
                     required
@@ -820,7 +788,6 @@ const ManageInstructors = () => {
                     <input
                       type="text"
                       id="firstName"
-                      name="firstName"
                       value={currentInstructor.firstName}
                       onChange={(e) => setCurrentInstructor({...currentInstructor, firstName: e.target.value})}
                       className="svcc-manage-instructor-form-input"
@@ -834,7 +801,6 @@ const ManageInstructors = () => {
                     <input
                       type="text"
                       id="lastName"
-                      name="lastName"
                       value={currentInstructor.lastName}
                       onChange={(e) => setCurrentInstructor({...currentInstructor, lastName: e.target.value})}
                       className="svcc-manage-instructor-form-input"
@@ -843,17 +809,15 @@ const ManageInstructors = () => {
                   </div>
                 </div>
                 <div className="svcc-manage-instructor-form-group">
-                  <label htmlFor="fields" className="svcc-manage-instructor-form-label">
-                    Fields of Specialization*
+                  <label htmlFor="birthday" className="svcc-manage-instructor-form-label">
+                    Birthday*
                   </label>
                   <input
-                    type="text"
-                    id="fields"
-                    name="fields"
-                    value={currentInstructor.fields}
-                    onChange={(e) => setCurrentInstructor({...currentInstructor, fields: e.target.value})}
+                    type="date"
+                    id="birthday"
+                    value={currentInstructor.birthday}
+                    onChange={(e) => setCurrentInstructor({...currentInstructor, birthday: e.target.value})}
                     className="svcc-manage-instructor-form-input"
-                    placeholder="e.g., Programming, Database, Networking"
                     required
                   />
                 </div>
@@ -864,45 +828,44 @@ const ManageInstructors = () => {
                   <input
                     type="email"
                     id="email"
-                    name="email"
                     value={currentInstructor.email}
                     onChange={(e) => setCurrentInstructor({...currentInstructor, email: e.target.value})}
                     className="svcc-manage-instructor-form-input"
                     required
                   />
                 </div>
-                <div className="svcc-manage-instructor-form-group">
-                  <label htmlFor="password" className="svcc-manage-instructor-form-label">
-                    {modalMode === 'add' ? 'Password*' : 'Password (leave empty to keep current)'}
-                  </label>
-                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                {modalMode === 'add' && currentInstructor.password && (
+                  <div className="svcc-manage-instructor-form-group">
+                    <label className="svcc-manage-instructor-form-label">
+                      Generated Password
+                    </label>
                     <input
                       type="text"
+                      value={currentInstructor.password}
+                      className="svcc-manage-instructor-form-input"
+                      readOnly
+                      style={{ backgroundColor: '#f5f5f5', cursor: 'not-allowed' }}
+                    />
+                    <p className="svcc-manage-instructor-form-hint">
+                      Password format: lastname + birthday (MMDDYYYY)
+                    </p>
+                  </div>
+                )}
+                {modalMode === 'edit' && (
+                  <div className="svcc-manage-instructor-form-group">
+                    <label htmlFor="password" className="svcc-manage-instructor-form-label">
+                      New Password (leave empty to keep current)
+                    </label>
+                    <input
+                      type="password"
                       id="password"
-                      name="password"
                       value={currentInstructor.password}
                       onChange={(e) => setCurrentInstructor({...currentInstructor, password: e.target.value})}
                       className="svcc-manage-instructor-form-input"
-                      required={modalMode === 'add'}
-                      readOnly={modalMode === 'add'}
-                      style={{ flex: 1 }}
+                      placeholder="Enter new password or leave empty"
                     />
-                    {modalMode === 'add' && (
-                      <button
-                        type="button"
-                        onClick={() => setCurrentInstructor({...currentInstructor, password: generateRandomPassword()})}
-                        className="svcc-manage-instructor-button-generate"
-                        style={{ whiteSpace: 'nowrap' }}
-                      >
-                        Regenerate
-                      </button>
-                    )}
                   </div>
-                  {modalMode === 'add' && (
-                    <p className="svcc-manage-instructor-form-hint">Password auto-generated (12 characters). Will be sent to instructor's email.</p>
-                  )}
-                </div>
-                    
+                )}
                 <div className="svcc-manage-instructor-modal-actions">
                   <button
                     type="button"
@@ -911,15 +874,53 @@ const ManageInstructors = () => {
                   >
                     Cancel
                   </button>
-                  <button
-                    type="submit"
-                    className="svcc-manage-instructor-button svcc-manage-instructor-button-primary"
-                  >
-                    <Save size={18} className="svcc-manage-instructor-button-icon" />
+                  <button type="submit" className="svcc-manage-instructor-button svcc-manage-instructor-button-primary">
+                    <Save size={18} />
                     {modalMode === 'add' ? 'Create Instructor' : 'Update Instructor'}
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Assign Program Head Modal */}
+      {showAssignHeadModal && (
+        <div className="svcc-manage-instructor-modal-overlay">
+          <div className="svcc-manage-instructor-confirm-modal">
+            <h3 className="svcc-manage-instructor-confirm-title">Assign Program Head</h3>
+            <p className="svcc-manage-instructor-confirm-text">
+              Select a program head for {currentDepartment.department_name}
+            </p>
+            <div className="svcc-manage-instructor-form-group">
+              <select
+                value={selectedHeadId}
+                onChange={(e) => setSelectedHeadId(e.target.value)}
+                className="svcc-manage-instructor-form-select"
+              >
+                <option value="">No Program Head</option>
+                {programHeads.map(head => (
+                  <option key={head.user_id} value={head.user_id}>
+                    {head.firstName} {head.lastName} ({head.program_head_id})
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="svcc-manage-instructor-confirm-actions">
+              <button
+                onClick={() => setShowAssignHeadModal(false)}
+                className="svcc-manage-instructor-button svcc-manage-instructor-button-secondary"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAssignHead}
+                className="svcc-manage-instructor-button svcc-manage-instructor-button-primary"
+              >
+                <Save size={18} />
+                Assign
+              </button>
             </div>
           </div>
         </div>
@@ -944,7 +945,7 @@ const ManageInstructors = () => {
                 onClick={handleDelete}
                 className="svcc-manage-instructor-button svcc-manage-instructor-button-danger"
               >
-                <Trash2 size={18} className="svcc-manage-instructor-button-icon" />
+                <Trash2 size={18} />
                 Delete
               </button>
             </div>

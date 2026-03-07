@@ -28,6 +28,7 @@
   padding: 0 20px;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 30px;
   position: relative;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;

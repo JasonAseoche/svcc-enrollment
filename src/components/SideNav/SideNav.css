@@ -220,7 +220,6 @@
 
 /* Logout button */
 .logout-btn {
-  margin-top: auto;
   border-top: 1px solid #f0f0f0;
   padding-top: 16px;
 }
@@ -302,7 +301,7 @@
     right: -100%;
     left: auto;
     width: 80%;
-    max-width: 320px;
+    max-width: 350px;
     height: 100vh;
     border-radius: 0;
     z-index: 1001;
@@ -357,7 +356,7 @@
 @media (max-width: 480px) {
   .sidenav1 {
     width: 90%;
-    max-width: 280px;
+    max-width: 340px;
   }
   
   .mobile-header-content1 {
@@ -423,6 +422,14 @@
 
 .sidenav1.minimized .nav-item1.secondary1.active1:hover .nav-icon1 {
   color: white;
+}
+
+.sidenav1.minimized .user-logout-row {
+  margin-top: auto;
+  width: 48px;
+  padding: 12px;
+  justify-content: center;
+  border-top: 1px solid #f0f0f0;
 }
 
 /* Prevent minimization on mobile */

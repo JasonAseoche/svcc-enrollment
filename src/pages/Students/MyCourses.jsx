@@ -1,94 +1,117 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../components/StudentLayout/MyCourses.css';
 
 const MyCourses = () => {
-  const [selectedYearTerm, setSelectedYearTerm] = useState('1st Year - 1st Term');
+  const [selectedYearTerm, setSelectedYearTerm] = useState('');
+  const [program, setProgram] = useState('Bachelor of Science in Information Technology');
+  const [courses, setCourses] = useState([]);
+  const [totalUnitsRequired, setTotalUnitsRequired] = useState(0);
+  const [totalUnitsTaken, setTotalUnitsTaken] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [initialized, setInitialized] = useState(false);
 
-  const program = 'Bachelor of Science in Information Technology';
-
-  // Sample curriculum data - replace with actual data later
-  const courses = [
-    {
-      id: 1,
-      courseCode: 'IT 111',
-      courseName: 'Introduction to Computing',
-      unitsRequired: 3,
-      unitsTaken: 3,
-      grade: 1.75,
-      preRequisite: 'None',
-      status: 'Taken'
-    },
-    {
-      id: 2,
-      courseCode: 'IT 112',
-      courseName: 'Computer Programming 1',
-      unitsRequired: 3,
-      unitsTaken: 3,
-      grade: 1.50,
-      preRequisite: 'IT 111',
-      status: 'Taken'
-    },
-    {
-      id: 3,
-      courseCode: 'IT 121',
-      courseName: 'Data Structures and Algorithms',
-      unitsRequired: 3,
-      unitsTaken: 3,
-      grade: null,
-      preRequisite: 'IT 112',
-      status: 'In-Progress'
-    },
-    {
-      id: 4,
-      courseCode: 'IT 122',
-      courseName: 'Object-Oriented Programming',
-      unitsRequired: 3,
-      unitsTaken: 3,
-      grade: null,
-      preRequisite: 'IT 112',
-      status: 'In-Progress'
-    },
-    {
-      id: 5,
-      courseCode: 'IT 211',
-      courseName: 'Database Management Systems',
-      unitsRequired: 3,
-      unitsTaken: 0,
-      grade: null,
-      preRequisite: 'IT 121',
-      status: 'Not Yet Taken'
-    },
-    {
-      id: 6,
-      courseCode: 'IT 212',
-      courseName: 'Web Development',
-      unitsRequired: 3,
-      unitsTaken: 0,
-      grade: null,
-      preRequisite: 'IT 122',
-      status: 'Not Yet Taken'
-    },
-    {
-      id: 7,
-      courseCode: 'EUTH 2',
-      courseName: 'Euthenics 2',
-      unitsRequired: 1,
-      unitsTaken: 1,
-      grade: 2.00,
-      preRequisite: 'EUTH 1',
-      status: 'Taken'
-    },
-    {
-      id: 8,
-      courseCode: 'PE 101',
-      courseName: 'Physical Education 1',
-      unitsRequired: 2,
-      unitsTaken: 2,
-      grade: 1.25,
-      preRequisite: 'None',
-      status: 'Taken'
+  // Get user_id from localStorage
+  const getUserId = () => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      try {
+        const user = JSON.parse(userData);
+        return user.user_id;
+      } catch (e) {
+        console.error('Error parsing user data:', e);
+        return null;
+      }
     }
-  ];
+    return null;
+  };
+
+  // Fetch student's current year and term on initial load
+  useEffect(() => {
+    const fetchCurrentYearTerm = async () => {
+      const userId = getUserId();
+      
+      if (!userId) {
+        setError('User not logged in');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `http://localhost/svcc-enrollment/mycourses_api.php?action=get_current_year_term&user_id=${userId}`
+        );
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          setSelectedYearTerm(data.data.display);
+          setInitialized(true);
+        } else {
+          // Fallback to 1st Year - 1st Term if not found
+          setSelectedYearTerm('1st Year - 1st Term');
+          setInitialized(true);
+        }
+      } catch (err) {
+        console.error('Error fetching current year/term:', err);
+        // Fallback to 1st Year - 1st Term on error
+        setSelectedYearTerm('1st Year - 1st Term');
+        setInitialized(true);
+      }
+    };
+
+    fetchCurrentYearTerm();
+  }, []);
+
+  // Fetch curriculum data from API
+  const fetchCurriculum = async (yearTerm) => {
+    const userId = getUserId();
+    
+    if (!userId) {
+      setError('User not logged in');
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Split year_level and term
+      const [yearLevel, term] = yearTerm.split(' - ');
+      
+      const response = await fetch(
+        `http://localhost/svcc-enrollment/mycourses_api.php?action=get_curriculum&user_id=${userId}&year_level=${encodeURIComponent(yearLevel)}&term=${encodeURIComponent(term)}`
+      );
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        setProgram(data.data.program);
+        setCourses(data.data.courses);
+        setTotalUnitsRequired(data.data.totalUnitsRequired || 0);
+        setTotalUnitsTaken(data.data.totalUnitsTaken || 0);
+      } else {
+        setError(data.message || 'Failed to load curriculum');
+      }
+    } catch (err) {
+      console.error('Error fetching curriculum:', err);
+      setError('Failed to connect to server');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch curriculum on component mount and when selected year/term changes
+  useEffect(() => {
+    if (initialized && selectedYearTerm) {
+      fetchCurriculum(selectedYearTerm);
+    }
+  }, [selectedYearTerm, initialized]);
+
+  const handleYearTermChange = (e) => {
+    setSelectedYearTerm(e.target.value);
+  };
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -129,6 +152,40 @@ const MyCourses = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="svcc-mycourses-container">
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          minHeight: '400px',
+          fontSize: '16px',
+          color: '#6b7280'
+        }}>
+          Loading curriculum...
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="svcc-mycourses-container">
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          minHeight: '400px',
+          fontSize: '16px',
+          color: '#d10f0f'
+        }}>
+          Error: {error}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="svcc-mycourses-container">
       <div className="svcc-mycourses-header">
@@ -136,16 +193,16 @@ const MyCourses = () => {
           <select 
             className="svcc-mycourses-select"
             value={selectedYearTerm}
-            onChange={(e) => setSelectedYearTerm(e.target.value)}
+            onChange={handleYearTermChange}
           >
-            <option>1st Year - 1st Term</option>
-            <option>1st Year - 2nd Term</option>
-            <option>2nd Year - 1st Term</option>
-            <option>2nd Year - 2nd Term</option>
-            <option>3rd Year - 1st Term</option>
-            <option>3rd Year - 2nd Term</option>
-            <option>4th Year - 1st Term</option>
-            <option>4th Year - 2nd Term</option>
+            <option value="1st Year - 1st Term">1st Year - 1st Sem</option>
+            <option value="1st Year - 2nd Term">1st Year - 2nd Sem</option>
+            <option value="2nd Year - 1st Term">2nd Year - 1st Sem</option>
+            <option value="2nd Year - 2nd Term">2nd Year - 2nd Sem</option>
+            <option value="3rd Year - 1st Term">3rd Year - 1st Sem</option>
+            <option value="3rd Year - 2nd Term">3rd Year - 2nd Sem</option>
+            <option value="4th Year - 1st Term">4th Year - 1st Sem</option>
+            <option value="4th Year - 2nd Term">4th Year - 2nd Sem</option>
           </select>
         </div>
         <div className="svcc-mycourses-header-right">
@@ -178,53 +235,70 @@ const MyCourses = () => {
           </div>
           <span className="svcc-mycourses-legend-text">Not Yet Taken</span>
         </div>
+        <div className="svcc-mycourses-legend-divider"></div>
+        <div className="svcc-mycourses-legend-item">
+          <span className="svcc-mycourses-legend-text">
+            <strong>Units Required:</strong> {totalUnitsRequired}
+          </span>
+        </div>
+        <div className="svcc-mycourses-legend-item">
+          <span className="svcc-mycourses-legend-text">
+            <strong>Units Taken:</strong> {totalUnitsTaken}
+          </span>
+        </div>
       </div>
 
-      <div className="svcc-mycourses-list">
-        {courses.map((course) => (
-          <div key={course.id} className="svcc-mycourses-card">
-            <div className="svcc-mycourses-card-header">
-              <div className="svcc-mycourses-card-title">
-                <span className="svcc-mycourses-code">{course.courseCode}</span>
-                <h3 className="svcc-mycourses-name">{course.courseName}</h3>
-              </div>
-              <div 
-                className="svcc-mycourses-status-badge" 
-                style={{ 
-                  backgroundColor: `${getStatusColor(course.status)}15`,
-                  color: getStatusColor(course.status)
-                }}
-              >
-                <div className="svcc-mycourses-status-icon">
-                  {getStatusIcon(course.status)}
+      {courses.length === 0 ? (
+        <div className="svcc-mycourses-empty">
+          <p>No courses found for this term.</p>
+        </div>
+      ) : (
+        <div className="svcc-mycourses-list">
+          {courses.map((course) => (
+            <div key={course.id} className="svcc-mycourses-card">
+              <div className="svcc-mycourses-card-header">
+                <div className="svcc-mycourses-card-title">
+                  <span className="svcc-mycourses-code">{course.courseCode}</span>
+                  <h3 className="svcc-mycourses-name">{course.courseName}</h3>
                 </div>
-                <span>{course.status}</span>
+                <div 
+                  className="svcc-mycourses-status-badge" 
+                  style={{ 
+                    backgroundColor: `${getStatusColor(course.status)}15`,
+                    color: getStatusColor(course.status)
+                  }}
+                >
+                  <div className="svcc-mycourses-status-icon">
+                    {getStatusIcon(course.status)}
+                  </div>
+                  <span>{course.status}</span>
+                </div>
               </div>
-            </div>
 
-            <div className="svcc-mycourses-card-grid">
-              <div className="svcc-mycourses-info-item">
-                <span className="svcc-mycourses-info-label">Units Required</span>
-                <span className="svcc-mycourses-info-value">{course.unitsRequired}</span>
-              </div>
-              <div className="svcc-mycourses-info-item">
-                <span className="svcc-mycourses-info-label">Units Taken</span>
-                <span className="svcc-mycourses-info-value">{course.unitsTaken}</span>
-              </div>
-              <div className="svcc-mycourses-info-item">
-                <span className="svcc-mycourses-info-label">Grade</span>
-                <span className="svcc-mycourses-info-value">
-                  {course.grade ? course.grade.toFixed(2) : '—'}
-                </span>
-              </div>
-              <div className="svcc-mycourses-info-item svcc-mycourses-prereq">
-                <span className="svcc-mycourses-info-label">Pre-Requisite/Co-Requisite</span>
-                <span className="svcc-mycourses-info-value">{course.preRequisite}</span>
+              <div className="svcc-mycourses-card-grid">
+                <div className="svcc-mycourses-info-item">
+                  <span className="svcc-mycourses-info-label">Units Required</span>
+                  <span className="svcc-mycourses-info-value">{course.unitsRequired}</span>
+                </div>
+                <div className="svcc-mycourses-info-item">
+                  <span className="svcc-mycourses-info-label">Units Taken</span>
+                  <span className="svcc-mycourses-info-value">{course.unitsTaken}</span>
+                </div>
+                <div className="svcc-mycourses-info-item">
+                  <span className="svcc-mycourses-info-label">Grade</span>
+                  <span className="svcc-mycourses-info-value">
+                    {course.grade ? course.grade.toFixed(2) : '—'}
+                  </span>
+                </div>
+                <div className="svcc-mycourses-info-item svcc-mycourses-prereq">
+                  <span className="svcc-mycourses-info-label">Pre-Requisite/Co-Requisite</span>
+                  <span className="svcc-mycourses-info-value">{course.preRequisite}</span>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

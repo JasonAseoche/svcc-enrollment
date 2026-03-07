@@ -1,108 +1,131 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { Search, X, ArrowLeft, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Search, X, ArrowLeft, AlertCircle, Clock } from 'lucide-react';
+import axios from 'axios';
+import { getCurrentUser, getUserId, getUserFullName } from '../../utils/auth';
 import '../../components/InstructorLayout/ViewCourses.css';
 
-// Mock data for courses
-const MOCK_COURSES = [
-  {
-    id: 1,
-    courseName: 'Data Structures and Algorithms',
-    enrolledStudents: 35,
-    time: '7:00 AM - 9:00 AM',
-    schedule: 'Monday, Wednesday',
-    section: 'BSIT-301'
-  },
-  {
-    id: 2,
-    courseName: 'Web Development 2',
-    enrolledStudents: 28,
-    time: '9:00 AM - 11:00 AM',
-    schedule: 'Monday, Wednesday',
-    section: 'BSIT-301'
-  },
-  {
-    id: 3,
-    courseName: 'Database Management Systems',
-    enrolledStudents: 32,
-    time: '1:00 PM - 3:00 PM',
-    schedule: 'Tuesday, Thursday',
-    section: 'BSIT-302'
-  },
-  {
-    id: 4,
-    courseName: 'Software Engineering',
-    enrolledStudents: 30,
-    time: '8:00 AM - 10:00 AM',
-    schedule: 'Tuesday, Thursday',
-    section: 'BSIT-201'
-  },
-  {
-    id: 5,
-    courseName: 'Mobile Application Development',
-    enrolledStudents: 25,
-    time: '10:00 AM - 12:00 PM',
-    schedule: 'Friday',
-    section: 'BSIT-302'
-  },
-  {
-    id: 6,
-    courseName: 'Computer Networks',
-    enrolledStudents: 27,
-    time: '2:00 PM - 4:00 PM',
-    schedule: 'Wednesday, Friday',
-    section: 'BSIT-201'
-  }
-];
+const API_URL = 'http://localhost/svcc-enrollment/instructor_api.php';
 
-// Mock data for students enrolled in courses
-const MOCK_ENROLLED_STUDENTS = {
-  1: [
-    { id: 1, studentNumber: 'STU-2024-001', name: 'Maria Santos', yearLevel: '3rd Year', status: 'Active' },
-    { id: 2, studentNumber: 'STU-2024-002', name: 'Juan Dela Cruz', yearLevel: '3rd Year', status: 'Active' },
-    { id: 3, studentNumber: 'STU-2024-003', name: 'Ana Reyes', yearLevel: '3rd Year', status: 'Active' },
-    { id: 4, studentNumber: 'STU-2024-004', name: 'Carlos Mendez', yearLevel: '3rd Year', status: 'Active' },
-    { id: 5, studentNumber: 'STU-2024-005', name: 'Lisa Garcia', yearLevel: '3rd Year', status: 'Inactive' }
-  ],
-  2: [
-    { id: 6, studentNumber: 'STU-2024-006', name: 'Robert Torres', yearLevel: '3rd Year', status: 'Active' },
-    { id: 7, studentNumber: 'STU-2024-007', name: 'Elena Martinez', yearLevel: '3rd Year', status: 'Active' },
-    { id: 8, studentNumber: 'STU-2024-008', name: 'Pedro Gonzales', yearLevel: '3rd Year', status: 'Active' }
-  ],
-  3: [
-    { id: 9, studentNumber: 'STU-2024-009', name: 'Sofia Ramirez', yearLevel: '3rd Year', status: 'Active' },
-    { id: 10, studentNumber: 'STU-2024-010', name: 'Diego Rivera', yearLevel: '3rd Year', status: 'Active' },
-    { id: 11, studentNumber: 'STU-2024-011', name: 'Carmen Lopez', yearLevel: '3rd Year', status: 'Active' }
-  ],
-  4: [
-    { id: 12, studentNumber: 'STU-2024-012', name: 'Miguel Fernandez', yearLevel: '2nd Year', status: 'Active' },
-    { id: 13, studentNumber: 'STU-2024-013', name: 'Isabel Cruz', yearLevel: '2nd Year', status: 'Active' }
-  ],
-  5: [
-    { id: 14, studentNumber: 'STU-2024-014', name: 'Antonio Morales', yearLevel: '3rd Year', status: 'Active' },
-    { id: 15, studentNumber: 'STU-2024-015', name: 'Lucia Hernandez', yearLevel: '3rd Year', status: 'Active' }
-  ],
-  6: [
-    { id: 16, studentNumber: 'STU-2024-016', name: 'Fernando Castro', yearLevel: '2nd Year', status: 'Active' },
-    { id: 17, studentNumber: 'STU-2024-017', name: 'Gabriela Diaz', yearLevel: '2nd Year', status: 'Active' }
-  ]
+// Helper function to convert 24hr time to 12hr format
+const convertTo12Hour = (time24) => {
+  if (!time24) return '';
+  
+  const [hours, minutes] = time24.split(':');
+  let hour = parseInt(hours);
+  const ampm = hour >= 12 ? 'PM' : 'AM';
+  
+  hour = hour % 12;
+  hour = hour ? hour : 12;
+  
+  return `${hour.toString().padStart(2, '0')}:${minutes} ${ampm}`;
 };
 
 const ViewCourses = () => {
-  const [currentView, setCurrentView] = useState('list'); // 'list' or 'students'
-  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [currentView, setCurrentView] = useState('sections'); // 'sections' or 'courses'
+  const [selectedSection, setSelectedSection] = useState(null);
+  const [sections, setSections] = useState([]);
   const [courses, setCourses] = useState([]);
-  const [students, setStudents] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   
   // Search states
+  const [sectionSearchTerm, setSectionSearchTerm] = useState('');
   const [courseSearchTerm, setCourseSearchTerm] = useState('');
-  const [studentSearchTerm, setStudentSearchTerm] = useState('');
 
-  // Initialize with mock data
+  // Get logged-in instructor's data
+  const currentUser = getCurrentUser();
+  const instructorId = getUserId();
+  const instructorName = getUserFullName();
+
+  // Verify user is an instructor
   useEffect(() => {
-    setCourses(MOCK_COURSES);
-  }, []);
+    if (!currentUser || currentUser.role !== 'instructor') {
+      console.error('User is not an instructor');
+      setIsError(true);
+    }
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (currentView === 'sections' && instructorId) {
+      fetchInstructorSections();
+    }
+  }, [currentView, instructorId]);
+
+  useEffect(() => {
+    if (currentView === 'courses' && selectedSection && instructorId) {
+      fetchInstructorCourses(selectedSection.id);
+    }
+  }, [currentView, selectedSection, instructorId]);
+
+  const fetchInstructorSections = async () => {
+    if (!instructorId) {
+      setIsError(true);
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      setIsError(false);
+      
+      console.log('Fetching sections for instructor:', instructorId);
+      
+      const response = await axios.get(`${API_URL}?action=instructor_sections&instructor_id=${instructorId}`);
+      
+      if (response.data.success) {
+        console.log('Sections loaded:', response.data.data);
+        setSections(response.data.data);
+      } else {
+        console.error('Failed to load sections:', response.data.message);
+        setIsError(true);
+      }
+    } catch (error) {
+      console.error('Error fetching sections:', error);
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchInstructorCourses = async (sectionId) => {
+    if (!instructorId || !sectionId) {
+      setIsError(true);
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      setIsError(false);
+      
+      console.log('Fetching courses for instructor:', instructorId, 'section:', sectionId);
+      
+      const response = await axios.get(`${API_URL}?action=instructor_courses&instructor_id=${instructorId}&section_id=${sectionId}`);
+      
+      if (response.data.success) {
+        console.log('Courses loaded:', response.data.data);
+        setCourses(response.data.data);
+      } else {
+        console.error('Failed to load courses:', response.data.message);
+        setIsError(true);
+      }
+    } catch (error) {
+      console.error('Error fetching courses:', error);
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Filter sections by search term
+  const filteredSections = useMemo(() => {
+    const sectionArray = Array.isArray(sections) ? sections : [];
+    if (!sectionSearchTerm) return sectionArray;
+    const searchLower = sectionSearchTerm.toLowerCase();
+    return sectionArray.filter(section => 
+      section.section.toLowerCase().includes(searchLower) ||
+      section.year_level.toLowerCase().includes(searchLower) ||
+      section.term.toLowerCase().includes(searchLower)
+    );
+  }, [sections, sectionSearchTerm]);
 
   // Filter courses by search term
   const filteredCourses = useMemo(() => {
@@ -110,45 +133,147 @@ const ViewCourses = () => {
     if (!courseSearchTerm) return courseArray;
     const searchLower = courseSearchTerm.toLowerCase();
     return courseArray.filter(course => 
-      course.courseName.toLowerCase().includes(searchLower) ||
-      course.section.toLowerCase().includes(searchLower) ||
-      course.schedule.toLowerCase().includes(searchLower)
+      course.course_code.toLowerCase().includes(searchLower) ||
+      course.course_name.toLowerCase().includes(searchLower)
     );
   }, [courses, courseSearchTerm]);
 
-  // Filter students by search term
-  const filteredStudents = useMemo(() => {
-    const studentArray = Array.isArray(students) ? students : [];
-    if (!studentSearchTerm) return studentArray;
-    const searchLower = studentSearchTerm.toLowerCase();
-    return studentArray.filter(student => 
-      student.name.toLowerCase().includes(searchLower) ||
-      student.studentNumber.toLowerCase().includes(searchLower)
-    );
-  }, [students, studentSearchTerm]);
-
-  // View handlers
-  const handleViewCourse = (course) => {
-    setSelectedCourse(course);
-    setCurrentView('students');
-    // Load students from mock data
-    const enrolledStudents = MOCK_ENROLLED_STUDENTS[course.id] || [];
-    setStudents(enrolledStudents);
-    setStudentSearchTerm('');
+  const handleViewSection = (section) => {
+    setSelectedSection(section);
+    setCurrentView('courses');
+    setCourseSearchTerm('');
   };
 
-  const handleBackToList = () => {
-    setCurrentView('list');
-    setSelectedCourse(null);
-    setStudentSearchTerm('');
+  const handleBackToSections = () => {
+    setCurrentView('sections');
+    setSelectedSection(null);
+    setSectionSearchTerm('');
   };
 
-  // Render course list view
-  const renderListView = () => (
+  // Render sections list view
+  const renderSectionsView = () => (
     <div className="viewcourses-container">
       <div className="viewcourses-header-card">
         <div className="viewcourses-header-content">
-          <h1 className="viewcourses-page-title">List of Class/Courses</h1>
+          <div>
+            <h1 className="viewcourses-page-title">My Sections</h1>
+            <p className="viewcourses-instructor-name">Instructor: {instructorName}</p>
+          </div>
+          <div className="viewcourses-header-actions">
+            <div className="viewcourses-search-container">
+              <input
+                type="text"
+                placeholder="Search sections..."
+                className="viewcourses-search-input"
+                value={sectionSearchTerm}
+                onChange={(e) => setSectionSearchTerm(e.target.value)}
+              />
+              <Search className="viewcourses-search-icon" size={18} />
+              {sectionSearchTerm && (
+                <button 
+                  onClick={() => setSectionSearchTerm('')}
+                  className="viewcourses-search-clear"
+                >
+                  <X size={18} />
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="viewcourses-courses-container">
+        {isLoading ? (
+          <div className="viewcourses-loading-container">
+            <div className="viewcourses-loading-spinner"></div>
+            <p className="viewcourses-loading-text">Loading sections...</p>
+          </div>
+        ) : isError ? (
+          <div className="viewcourses-error-container">
+            <AlertCircle size={40} className="viewcourses-error-icon" />
+            <p className="viewcourses-error-text">Failed to load sections</p>
+            <button 
+              onClick={fetchInstructorSections}
+              className="viewcourses-retry-button"
+            >
+              Try Again
+            </button>
+          </div>
+        ) : filteredSections.length === 0 ? (
+          <div className="viewcourses-empty-container">
+            {sectionSearchTerm ? (
+              <>
+                <p className="viewcourses-empty-text">No sections found matching "{sectionSearchTerm}"</p>
+                <button 
+                  onClick={() => setSectionSearchTerm('')}
+                  className="viewcourses-empty-action"
+                >
+                  Clear search
+                </button>
+              </>
+            ) : (
+              <p className="viewcourses-empty-text">You are not assigned to any sections yet</p>
+            )}
+          </div>
+        ) : (
+          <div className="viewcourses-courses-grid">
+            {filteredSections.map((section) => (
+              <div key={section.id} className="viewcourses-course-card">
+                <div className="viewcourses-card-header">
+                  <h3 className="viewcourses-course-name">{section.section}</h3>
+                  <div className="viewcourses-card-actions">
+                    <button
+                      onClick={() => handleViewSection(section)}
+                      className="viewcourses-btn viewcourses-btn-view"
+                    >
+                      View Courses
+                    </button>
+                  </div>
+                </div>
+                <div className="viewcourses-card-content">
+                  <div className="viewcourses-info-item">
+                    <span className="viewcourses-info-label">Program:</span>
+                    <span className="viewcourses-info-value">{section.program}</span>
+                  </div>
+                  <div className="viewcourses-info-item">
+                    <span className="viewcourses-info-label">Year Level:</span>
+                    <span className="viewcourses-info-value">{section.year_level}</span>
+                  </div>
+                  <div className="viewcourses-info-item">
+                    <span className="viewcourses-info-label">Sem:</span>
+                    <span className="viewcourses-info-value">{section.term.replace('1st Term','1st Sem').replace('2nd Term','2nd Sem')}</span>
+                  </div>
+                  <div className="viewcourses-info-item">
+                    <span className="viewcourses-info-label">My Courses:</span>
+                    <span className="viewcourses-info-value">{section.course_count}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  // Render courses view
+  const renderCoursesView = () => (
+    <div className="viewcourses-container">
+      <div className="viewcourses-header-card">
+        <div className="viewcourses-header-content">
+          <div className="viewcourses-title-with-back">
+            <button
+              onClick={handleBackToSections}
+              className="viewcourses-back-button"
+            >
+              <ArrowLeft size={20} />
+            </button>
+            <div className="viewcourses-breadcrumb">
+              <h1 className="viewcourses-page-title">{selectedSection?.section}</h1>
+              <span className="viewcourses-breadcrumb-separator">›</span>
+              <h2 className="viewcourses-section-title">My Courses</h2>
+            </div>
+          </div>
           <div className="viewcourses-header-actions">
             <div className="viewcourses-search-container">
               <input
@@ -183,10 +308,7 @@ const ViewCourses = () => {
             <AlertCircle size={40} className="viewcourses-error-icon" />
             <p className="viewcourses-error-text">Failed to load courses</p>
             <button 
-              onClick={() => {
-                setIsError(false);
-                setCourses(MOCK_COURSES);
-              }}
+              onClick={() => fetchInstructorCourses(selectedSection.id)}
               className="viewcourses-retry-button"
             >
               Try Again
@@ -205,7 +327,7 @@ const ViewCourses = () => {
                 </button>
               </>
             ) : (
-              <p className="viewcourses-empty-text">No courses available</p>
+              <p className="viewcourses-empty-text">No courses assigned in this section</p>
             )}
           </div>
         ) : (
@@ -213,33 +335,45 @@ const ViewCourses = () => {
             {filteredCourses.map((course) => (
               <div key={course.id} className="viewcourses-course-card">
                 <div className="viewcourses-card-header">
-                  <h3 className="viewcourses-course-name">{course.courseName}</h3>
-                  <div className="viewcourses-card-actions">
-                    <button
-                      onClick={() => handleViewCourse(course)}
-                      className="viewcourses-btn viewcourses-btn-view"
-                    >
-                      View
-                    </button>
+                  <div>
+                    <div className="viewcourses-course-code-badge">{course.course_code}</div>
+                    <h3 className="viewcourses-course-name">{course.course_name}</h3>
                   </div>
                 </div>
                 <div className="viewcourses-card-content">
                   <div className="viewcourses-info-item">
-                    <span className="viewcourses-info-label">No. of Enrolled Students:</span>
-                    <span className="viewcourses-info-value">{course.enrolledStudents}</span>
+                    <span className="viewcourses-info-label">Units:</span>
+                    <span className="viewcourses-info-value">{course.units_required}</span>
                   </div>
-                  <div className="viewcourses-info-item">
-                    <span className="viewcourses-info-label">Time:</span>
-                    <span className="viewcourses-info-value">{course.time}</span>
-                  </div>
-                  <div className="viewcourses-info-item">
-                    <span className="viewcourses-info-label">Schedule:</span>
-                    <span className="viewcourses-info-value">{course.schedule}</span>
-                  </div>
-                  <div className="viewcourses-info-item">
-                    <span className="viewcourses-info-label">Section:</span>
-                    <span className="viewcourses-info-value">{course.section}</span>
-                  </div>
+                  
+                  {course.schedules && course.schedules.length > 0 ? (
+                    <div className="viewcourses-schedule-section">
+                      <span className="viewcourses-info-label">Schedule:</span>
+                      <div className="viewcourses-schedule-list">
+                        {course.schedules.map((schedule, idx) => (
+                          <div key={idx} className="viewcourses-schedule-item">
+                            {schedule.day && (
+                              <div className="viewcourses-schedule-day">{schedule.day}</div>
+                            )}
+                            {schedule.start_time && schedule.end_time && (
+                              <div className="viewcourses-schedule-time">
+                                <Clock size={14} />
+                                {convertTo12Hour(schedule.start_time)} - {convertTo12Hour(schedule.end_time)}
+                              </div>
+                            )}
+                            {schedule.room && (
+                              <div className="viewcourses-schedule-room">Room: {schedule.room}</div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="viewcourses-info-item">
+                      <span className="viewcourses-info-label">Schedule:</span>
+                      <span className="viewcourses-info-value viewcourses-no-schedule">Not yet scheduled</span>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -249,117 +383,7 @@ const ViewCourses = () => {
     </div>
   );
 
-  // Render students view
-  const renderStudentsView = () => (
-    <div className="viewcourses-container">
-      <div className="viewcourses-header-card">
-        <div className="viewcourses-header-content">
-          <div className="viewcourses-title-with-back">
-            <button
-              onClick={handleBackToList}
-              className="viewcourses-back-button"
-            >
-              <ArrowLeft size={20} />
-            </button>
-            <h1 className="viewcourses-page-title">{selectedCourse?.courseName}</h1>
-          </div>
-          <div className="viewcourses-header-actions">
-            <div className="viewcourses-search-container">
-              <input
-                type="text"
-                placeholder="Search students..."
-                className="viewcourses-search-input"
-                value={studentSearchTerm}
-                onChange={(e) => setStudentSearchTerm(e.target.value)}
-              />
-              <Search className="viewcourses-search-icon" size={18} />
-              {studentSearchTerm && (
-                <button 
-                  onClick={() => setStudentSearchTerm('')}
-                  className="viewcourses-search-clear"
-                >
-                  <X size={18} />
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="viewcourses-table-container">
-        {isLoading ? (
-          <div className="viewcourses-loading-container">
-            <div className="viewcourses-loading-spinner"></div>
-            <p className="viewcourses-loading-text">Loading students...</p>
-          </div>
-        ) : isError ? (
-          <div className="viewcourses-error-container">
-            <AlertCircle size={40} className="viewcourses-error-icon" />
-            <p className="viewcourses-error-text">Failed to load students</p>
-            <button 
-              onClick={() => {
-                setIsError(false);
-                const enrolledStudents = MOCK_ENROLLED_STUDENTS[selectedCourse.id] || [];
-                setStudents(enrolledStudents);
-              }}
-              className="viewcourses-retry-button"
-            >
-              Try Again
-            </button>
-          </div>
-        ) : filteredStudents.length === 0 ? (
-          <div className="viewcourses-empty-container">
-            {studentSearchTerm ? (
-              <>
-                <p className="viewcourses-empty-text">No students found matching "{studentSearchTerm}"</p>
-                <button 
-                  onClick={() => setStudentSearchTerm('')}
-                  className="viewcourses-empty-action"
-                >
-                  Clear search
-                </button>
-              </>
-            ) : (
-              <p className="viewcourses-empty-text">No students enrolled</p>
-            )}
-          </div>
-        ) : (
-          <div className="viewcourses-table-scroll">
-            <table className="viewcourses-table">
-              <thead>
-                <tr>
-                  <th>Student Number</th>
-                  <th>Name</th>
-                  <th>Year Level</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredStudents.map((student) => (
-                  <tr key={student.id}>
-                    <td data-label="Student Number:">
-                      <div className="viewcourses-student-number">{student.studentNumber}</div>
-                    </td>
-                    <td data-label="Name:">
-                      <div className="viewcourses-student-name">{student.name}</div>
-                    </td>
-                    <td data-label="Year Level:">{student.yearLevel}</td>
-                    <td data-label="Status:">
-                      <span className={`viewcourses-status-badge ${student.status.toLowerCase()}`}>
-                        {student.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-
-  return currentView === 'list' ? renderListView() : renderStudentsView();
+  return currentView === 'sections' ? renderSectionsView() : renderCoursesView();
 };
 
 export default ViewCourses;

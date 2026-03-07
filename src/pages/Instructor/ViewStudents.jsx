@@ -1,77 +1,76 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { getCurrentUser, getInstructorId, getUserId } from '../../utils/auth';
 import '../../components/InstructorLayout/ViewStudents.css';
 
 const ViewStudents = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSection, setSelectedSection] = useState('All Sections');
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Sample students data - replace with actual data later
-  const students = [
-    {
-      id: 1,
-      name: 'Maria Santos',
-      yearLevel: '3rd Year',
-      section: 'BSIT-301',
-      termEnrolled: '2025-2026 1st Term',
-      status: 'Active'
-    },
-    {
-      id: 2,
-      name: 'Juan Dela Cruz',
-      yearLevel: '3rd Year',
-      section: 'BSIT-301',
-      termEnrolled: '2025-2026 1st Term',
-      status: 'Active'
-    },
-    {
-      id: 3,
-      name: 'Ana Reyes',
-      yearLevel: '3rd Year',
-      section: 'BSIT-302',
-      termEnrolled: '2025-2026 1st Term',
-      status: 'Active'
-    },
-    {
-      id: 4,
-      name: 'Carlos Mendez',
-      yearLevel: '2nd Year',
-      section: 'BSIT-201',
-      termEnrolled: '2025-2026 1st Term',
-      status: 'Active'
-    },
-    {
-      id: 5,
-      name: 'Lisa Garcia',
-      yearLevel: '3rd Year',
-      section: 'BSIT-301',
-      termEnrolled: '2025-2026 1st Term',
-      status: 'Inactive'
-    },
-    {
-      id: 6,
-      name: 'Robert Torres',
-      yearLevel: '3rd Year',
-      section: 'BSIT-302',
-      termEnrolled: '2025-2026 1st Term',
-      status: 'Active'
-    },
-    {
-      id: 7,
-      name: 'Elena Martinez',
-      yearLevel: '2nd Year',
-      section: 'BSIT-201',
-      termEnrolled: '2025-2026 1st Term',
-      status: 'Active'
-    },
-    {
-      id: 8,
-      name: 'Pedro Gonzales',
-      yearLevel: '3rd Year',
-      section: 'BSIT-301',
-      termEnrolled: '2025-2026 1st Term',
-      status: 'Active'
-    }
-  ];
+  const API_URL = 'http://localhost/svcc-enrollment';
+
+  // Fetch students assigned to the instructor
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // Get current user
+        const currentUser = getCurrentUser();
+        console.log('Current User:', currentUser);
+        
+        // Try to get instructor_id, fallback to user_id
+        let instructorId = getInstructorId();
+        
+        // If instructor_id is not set, use user_id (for instructors, user_id might be the identifier)
+        if (!instructorId) {
+          instructorId = getUserId();
+          console.log('Using user_id as instructor_id:', instructorId);
+        }
+        
+        if (!instructorId) {
+          setError('Instructor ID not found. Please log in again.');
+          setLoading(false);
+          return;
+        }
+        
+        console.log('Fetching students for instructor_id:', instructorId);
+        
+        const response = await axios.get(
+          `${API_URL}/fetch_students.php?instructor_id=${instructorId}`
+        );
+
+        console.log('Response:', response.data);
+
+        if (response.data.success) {
+          setStudents(response.data.students || []);
+        } else {
+          setError(response.data.message || 'Failed to fetch students');
+        }
+      } catch (err) {
+        console.error('Error fetching students:', err);
+        if (err.response) {
+          // Server responded with error
+          console.error('Server error:', err.response.data);
+          setError(err.response.data.message || 'Failed to load students');
+        } else if (err.request) {
+          // Request made but no response
+          setError('Unable to connect to server. Please check your connection.');
+        } else {
+          // Other errors
+          setError('An error occurred. Please try again later.');
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStudents();
+  }, []); // Empty dependency array means this runs once on mount
 
   // Filter students based on search and section
   const filteredStudents = students.filter(student => {
@@ -86,6 +85,44 @@ const ViewStudents = () => {
   const clearSearch = () => {
     setSearchQuery('');
   };
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="viewstudents-container">
+        <div className="viewstudents-content-wrapper">
+          <div className="viewstudents-loading">
+            <div className="viewstudents-spinner"></div>
+            <p>Loading students...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="viewstudents-container">
+        <div className="viewstudents-content-wrapper">
+          <div className="viewstudents-error">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <p>{error}</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="viewstudents-retry-button"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="viewstudents-container">
@@ -176,7 +213,7 @@ const ViewStudents = () => {
                 ) : (
                   <tr>
                     <td colSpan="5" className="viewstudents-no-data">
-                      No students found
+                      {students.length === 0 ? 'No students assigned to you yet' : 'No students found'}
                     </td>
                   </tr>
                 )}

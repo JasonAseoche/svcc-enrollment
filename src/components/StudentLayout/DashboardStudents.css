@@ -1,0 +1,986 @@
+/* DashboardStudents.css — Professional / Formal Redesign */
+
+/* ── Google Fonts ─────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+/* ── Design Tokens ────────────────────────────────────────── */
+:root {
+  --color-bg:         #f0f0ef;
+  --color-surface:    #ffffff;
+  --color-border:     #d4d4d3;
+  --color-border-strong: #b0b0af;
+  --color-text:       #1a1a1a;
+  --color-text-muted: #6b6b6a;
+  --color-text-faint: #9e9e9d;
+  --color-accent:     #8b0000;
+  --color-accent-hover: #6d0000;
+  --color-accent-light: #f5f0f0;
+  --color-success:    #1a5c2e;
+  --color-success-bg: #0bc45b;
+  --color-warning:    #7a4500;
+  --color-warning-bg: #fdf3e7;
+  --color-info:       #1a3a5c;
+  --color-info-bg:    #eaf0f7;
+  --color-danger:     #8b0000;
+  --color-danger-bg:  #f5f0f0;
+  --radius-sm:        4px;
+  --radius-md:        6px;
+  --radius-lg:        8px;
+  --shadow-card:      0 1px 3px rgba(0,0,0,0.08), 0 1px 1px rgba(0,0,0,0.04);
+  --shadow-dropdown:  0 4px 12px rgba(0,0,0,0.10), 0 1px 3px rgba(0,0,0,0.06);
+  --font-sans:        'IBM Plex Sans', sans-serif;
+  --font-mono:        'IBM Plex Mono', monospace;
+}
+
+/* ── Base ─────────────────────────────────────────────────── */
+.svcc-dashboard-students-container {
+  font-family: var(--font-sans);
+  padding: 28px 32px;
+  background-color: var(--color-bg);
+  min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+  color: var(--color-text);
+}
+
+/* ── Grid Layout ──────────────────────────────────────────── */
+.svcc-dashboard-students-main {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.svcc-dashboard-students-main.svcc-enrolled {
+  grid-template-columns: 1fr;
+  max-width: 1100px;
+}
+
+/* ── Loading ──────────────────────────────────────────────── */
+.svcc-dashboard-students-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 14px;
+}
+
+.svcc-dashboard-students-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: svcc-dashboard-spin 0.75s linear infinite;
+}
+
+@keyframes svcc-dashboard-spin {
+  to { transform: rotate(360deg); }
+}
+
+.svcc-dashboard-students-loading p {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* ── Error ────────────────────────────────────────────────── */
+.svcc-dashboard-students-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 14px;
+  text-align: center;
+  padding: 40px;
+}
+
+.svcc-dashboard-students-error svg {
+  width: 48px;
+  height: 48px;
+  color: var(--color-accent);
+}
+
+.svcc-dashboard-students-error h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.svcc-dashboard-students-error p {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin: 0;
+  max-width: 360px;
+  line-height: 1.6;
+}
+
+.svcc-dashboard-students-retry-btn {
+  padding: 9px 24px;
+  background-color: var(--color-accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  transition: background-color 0.15s;
+  margin-top: 4px;
+}
+
+.svcc-dashboard-students-retry-btn:hover {
+  background-color: var(--color-accent-hover);
+}
+
+/* ── Left Column ──────────────────────────────────────────── */
+.svcc-dashboard-students-left {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+/* ── Card Base ────────────────────────────────────────────── */
+.svcc-dashboard-students-grade-card,
+.svcc-dashboard-students-schedule-card,
+.svcc-dashboard-students-enrollment-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* ── Grade Card ───────────────────────────────────────────── */
+.svcc-dashboard-students-grade-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.svcc-dashboard-students-grade-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px 24px 16px;
+}
+
+.svcc-dashboard-students-grade-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 2px 0;
+}
+
+.svcc-dashboard-students-grade-date {
+  font-size: 11px;
+  color: var(--color-text-faint);
+  margin: 0;
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+}
+
+.svcc-dashboard-students-view-all-btn {
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-accent);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 5px 12px;
+  letter-spacing: 0.06em;
+  transition: all 0.15s;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+.svcc-dashboard-students-view-all-btn:hover {
+  background-color: var(--color-accent-light);
+  border-color: var(--color-accent);
+}
+
+.svcc-dashboard-students-grade-divider {
+  height: 1px;
+  background: var(--color-border);
+  width: 100%;
+}
+
+.svcc-dashboard-students-grade-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 24px;
+}
+
+.svcc-dashboard-students-grade-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.svcc-dashboard-students-subject-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 6px 0;
+  line-height: 1.4;
+}
+
+.svcc-dashboard-students-instructor-name {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin: 0;
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+}
+
+.svcc-dashboard-students-grade-value {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+  padding: 12px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  min-width: 80px;
+  text-align: right;
+}
+
+.svcc-dashboard-students-grade-number {
+  font-family: var(--font-mono);
+  font-size: 32px;
+  font-weight: 500;
+  color: var(--color-text);
+  line-height: 1;
+}
+
+.svcc-dashboard-students-grade-type {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ── Schedule Card ────────────────────────────────────────── */
+.svcc-dashboard-students-schedule-card {
+  padding: 0;
+  overflow: hidden;
+  min-height: 520px;
+}
+.svcc-dashboard-students-schedule-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px 16px;
+}
+
+.svcc-dashboard-students-schedule-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 2px 0;
+}
+
+.svcc-dashboard-students-schedule-date {
+  font-size: 11px;
+  color: var(--color-text-faint);
+  margin: 0;
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+}
+
+.svcc-dashboard-students-schedule-divider {
+  height: 1px;
+  background: var(--color-border);
+  width: 100%;
+}
+
+.svcc-dashboard-students-schedule-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Day Filter ───────────────────────────────────────────── */
+.svcc-dashboard-students-day-filter {
+  position: relative;
+}
+
+.svcc-dashboard-students-day-filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  min-width: 155px;
+  justify-content: space-between;
+  letter-spacing: 0.01em;
+}
+
+.svcc-dashboard-students-day-filter-btn:hover {
+  border-color: var(--color-accent);
+  background: var(--color-accent-light);
+}
+
+.svcc-dashboard-students-day-filter-btn svg {
+  transition: transform 0.2s;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.svcc-dashboard-students-day-filter-btn svg.rotated {
+  transform: rotate(180deg);
+}
+
+/* ── Dropdown ─────────────────────────────────────────────── */
+.svcc-dashboard-students-day-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-dropdown);
+  min-width: 200px;
+  z-index: 1000;
+  overflow: hidden;
+  animation: svcc-slideDown 0.15s ease;
+}
+
+@keyframes svcc-slideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.svcc-dashboard-students-day-dropdown button {
+  display: block;
+  width: 100%;
+  padding: 9px 14px;
+  text-align: left;
+  background: none;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background 0.1s;
+  font-weight: 400;
+}
+
+.svcc-dashboard-students-day-dropdown button:hover:not(:disabled) {
+  background: var(--color-bg);
+}
+
+.svcc-dashboard-students-day-dropdown button.active {
+  background: var(--color-accent);
+  color: white;
+  font-weight: 600;
+  position: relative;
+  padding-left: 32px;
+}
+
+.svcc-dashboard-students-day-dropdown button.active::before {
+  content: '✓';
+  position: absolute;
+  left: 12px;
+  font-size: 12px;
+}
+
+.svcc-dashboard-students-day-dropdown button:disabled {
+  color: var(--color-text-faint);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.svcc-dashboard-students-dropdown-divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: 3px 0;
+}
+
+/* ── Schedule Table ───────────────────────────────────────── */
+.svcc-dashboard-students-schedule-table {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.svcc-dashboard-students-schedule-table::-webkit-scrollbar {
+  height: 5px;
+}
+
+.svcc-dashboard-students-schedule-table::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+.svcc-dashboard-students-schedule-table::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: 3px;
+}
+
+.svcc-dashboard-students-schedule-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.svcc-dashboard-students-schedule-table thead th {
+  padding: 11px 20px;
+  text-align: left;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.svcc-dashboard-students-schedule-table tbody tr {
+  border-bottom: 1px solid var(--color-border);
+  transition: background 0.1s;
+}
+
+.svcc-dashboard-students-schedule-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.svcc-dashboard-students-schedule-table tbody tr:hover {
+  background: #fafafa;
+}
+
+.svcc-dashboard-students-schedule-table tbody td {
+  padding: 14px 20px;
+  font-size: 13px;
+  color: var(--color-text);
+  vertical-align: middle;
+}
+
+.svcc-dashboard-students-subject-cell { font-weight: 500; }
+
+.svcc-dashboard-students-subject-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.svcc-dashboard-students-course-code {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-accent);
+  letter-spacing: 0.04em;
+}
+
+.svcc-dashboard-students-course-name {
+  font-size: 13px;
+  color: var(--color-text);
+  line-height: 1.3;
+}
+
+.svcc-dashboard-students-day-cell {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.svcc-dashboard-students-professor-cell {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  letter-spacing: 0.03em;
+}
+
+/* ── No Schedule State ────────────────────────────────────── */
+.svcc-dashboard-students-no-schedule {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
+  gap: 12px;
+  text-align: center;
+}
+
+.svcc-dashboard-students-no-schedule svg {
+  width: 40px;
+  height: 40px;
+  color: var(--color-border-strong);
+}
+
+.svcc-dashboard-students-no-schedule p {
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin: 0;
+  line-height: 1.6;
+  max-width: 280px;
+}
+
+/* ── Right Column — Enrollment Card ──────────────────────── */
+.svcc-dashboard-students-right {
+  position: sticky;
+  top: 24px;
+  height: fit-content;
+  width: 100%;
+}
+
+.svcc-dashboard-students-enrollment-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.svcc-dashboard-students-enrollment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.svcc-dashboard-students-enrollment-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0;
+}
+
+.svcc-dashboard-students-enrollment-status1 {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: var(--radius-sm);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+/* ── Progress Steps ───────────────────────────────────────── */
+.svcc-dashboard-students-enrollment-progress {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.svcc-dashboard-students-progress-step {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 14px;
+}
+
+.svcc-dashboard-students-progress-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.svcc-dashboard-students-progress-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 12px;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.svcc-dashboard-students-progress-circle.svcc-completed {
+  background: var(--color-success-bg);
+  border-color: var(--color-success);
+  color: var(--color-success);
+}
+
+.svcc-dashboard-students-progress-circle.svcc-current {
+  background: var(--color-info-bg);
+  border-color: var(--color-info);
+  color: var(--color-info);
+}
+
+.svcc-dashboard-students-progress-line {
+  width: 1px;
+  flex: 1;
+  background: var(--color-border);
+  margin: 4px 0;
+  transition: background 0.2s;
+}
+
+.svcc-dashboard-students-progress-line.svcc-completed {
+  background: var(--color-success);
+  opacity: 0.4;
+}
+
+.svcc-dashboard-students-progress-content {
+  padding: 5px 0 22px 0;
+}
+
+.svcc-dashboard-students-progress-content h4 {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text);
+  margin: 0 0 3px 0;
+  line-height: 1.4;
+}
+
+.svcc-dashboard-students-progress-content h4.svcc-completed-text {
+  color: var(--color-text-muted);
+}
+
+.svcc-dashboard-students-progress-completed {
+  font-size: 11px;
+  color: var(--color-success);
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.svcc-dashboard-students-progress-current {
+  font-size: 11px;
+  color: var(--color-info);
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+/* ── Enrollment Message ───────────────────────────────────── */
+.svcc-dashboard-students-enrollment-message {
+  display: flex;
+  gap: 12px;
+  padding: 14px 20px;
+  background: var(--color-info-bg);
+  margin: 0 24px 16px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.svcc-dashboard-students-message-icon {
+  flex-shrink: 0;
+}
+
+.svcc-dashboard-students-enrollment-message p {
+  font-size: 13px;
+  color: var(--color-text);
+  margin: 0;
+  line-height: 1.55;
+}
+
+/* ── Enrollment Actions ───────────────────────────────────── */
+.svcc-dashboard-students-enrollment-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px 24px;
+}
+
+.svcc-dashboard-students-view-details-btn,
+.svcc-dashboard-students-contact-btn {
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: none;
+  width: 100%;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.svcc-dashboard-students-view-details-btn {
+  background: var(--color-accent);
+  color: white;
+}
+
+.svcc-dashboard-students-view-details-btn:hover {
+  background: var(--color-accent-hover);
+}
+
+.svcc-dashboard-students-contact-btn {
+  background: white;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+
+.svcc-dashboard-students-contact-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: var(--color-accent-light);
+}
+
+/* ── Selected Courses Panel ───────────────────────────────── */
+.svcc-dashboard-selected-courses {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 0;
+  overflow: hidden;
+  margin-top:-40px;
+}
+
+.svcc-dashboard-selected-courses-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0;
+  padding: 20px 24px 14px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.svcc-dashboard-courses-table-wrap {
+  overflow-x: auto;
+}
+
+.svcc-dashboard-courses-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.svcc-dashboard-courses-table thead tr {
+  background: var(--color-bg);
+}
+
+.svcc-dashboard-courses-table th {
+  padding: 10px 20px;
+  text-align: left;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+
+.svcc-dashboard-courses-table td {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  vertical-align: middle;
+}
+
+.svcc-dashboard-courses-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.svcc-dashboard-courses-table tbody tr:hover {
+  background: #fafafa;
+}
+
+.svcc-dashboard-course-code {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 12px;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.svcc-dashboard-course-units {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  width: 10px;
+}
+
+.svcc-dashboard-course-note {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  max-width: 180px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.svcc-dashboard-courses-table td:nth-child(2) {
+  max-width: 190px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.svcc-dashboard-courses-table td:nth-child(4) {
+  width: 50px;
+}
+
+
+
+/* ── Status Badges ────────────────────────────────────────── */
+.svcc-dashboard-course-status {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: var(--radius-sm);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+
+.svcc-dashboard-course-status--pending {
+  background: var(--color-info-bg);
+  color: var(--color-info);
+  border-color: rgba(26,58,92,0.15);
+}
+
+.svcc-dashboard-course-status--approved {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+  border-color: rgba(26,92,46,0.15);
+}
+
+.svcc-dashboard-course-status--declined {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+  border-color: rgba(139,0,0,0.15);
+}
+
+.svcc-dashboard-course-status--changed {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+  border-color: rgba(122,69,0,0.15);
+}
+
+/* ── Responsive ───────────────────────────────────────────── */
+/* Mobile order: Progress → Selected Courses → Schedule */
+@media (max-width: 1200px) {
+  .svcc-dashboard-students-main {
+    display: flex;          /* switch from grid to flex for order to work */
+    flex-direction: column;
+  }
+
+  .svcc-dashboard-students-right {
+    order: 1;   /* Progress — first */
+  }
+
+  .svcc-dashboard-selected-courses {
+    order: 2;   /* Selected Courses — second */
+    margin-top: 0; /* remove the negative margin */
+  }
+
+  .svcc-dashboard-students-left {
+    order: 3;   /* Schedule (+ grades) — last */
+  }
+}
+
+@media (max-width: 768px) {
+  .svcc-dashboard-students-container {
+    padding: 16px;
+  }
+  .svcc-dashboard-students-main {
+    gap: 16px;
+    grid-template-columns: 1fr;
+  }
+  .svcc-dashboard-students-left {
+    gap: 16px;
+  }
+  .svcc-dashboard-students-right {
+    position: static;
+  }
+  .svcc-dashboard-students-schedule-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .svcc-dashboard-students-schedule-actions,
+  .svcc-dashboard-students-day-filter,
+  .svcc-dashboard-students-day-filter-btn {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .svcc-dashboard-students-day-dropdown {
+    left: 0;
+    right: 0;
+    width: 100%;
+  }
+}
+
+/* ── Below 768px — Zoom-out effect ───────────────────────── */
+@media (max-width: 767px) {
+  .svcc-dashboard-students-container {
+    padding: 0;
+    overflow-x: hidden;
+  }
+  .svcc-dashboard-students-main {
+    width: 768px;
+    min-width: 768px;
+    transform-origin: top left;
+    padding: 16px 40px 16px 16px;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 767px) and (min-width: 750px) { .svcc-dashboard-students-main { transform: scale(0.977); } }
+@media (max-width: 749px) and (min-width: 725px) { .svcc-dashboard-students-main { transform: scale(0.944); } }
+@media (max-width: 724px) and (min-width: 700px) { .svcc-dashboard-students-main { transform: scale(0.911); } }
+@media (max-width: 699px) and (min-width: 675px) { .svcc-dashboard-students-main { transform: scale(0.878); } }
+@media (max-width: 674px) and (min-width: 650px) { .svcc-dashboard-students-main { transform: scale(0.846); } }
+@media (max-width: 649px) and (min-width: 625px) { .svcc-dashboard-students-main { transform: scale(0.814); } }
+@media (max-width: 624px) and (min-width: 600px) { .svcc-dashboard-students-main { transform: scale(0.781); } }
+@media (max-width: 599px) and (min-width: 575px) { .svcc-dashboard-students-main { transform: scale(0.749); } }
+@media (max-width: 574px) and (min-width: 550px) { .svcc-dashboard-students-main { transform: scale(0.716); } }
+@media (max-width: 549px) and (min-width: 525px) { .svcc-dashboard-students-main { transform: scale(0.684); } }
+@media (max-width: 524px) and (min-width: 500px) { .svcc-dashboard-students-main { transform: scale(0.651); } }
+@media (max-width: 499px) and (min-width: 475px) { .svcc-dashboard-students-main { transform: scale(0.618); } }
+@media (max-width: 474px) and (min-width: 450px) { .svcc-dashboard-students-main { transform: scale(0.586); } }
+@media (max-width: 449px) and (min-width: 425px) { .svcc-dashboard-students-main { transform: scale(0.553); } }
+@media (max-width: 424px) and (min-width: 400px) { .svcc-dashboard-students-main { transform: scale(0.521); } }
+@media (max-width: 399px) and (min-width: 375px) { .svcc-dashboard-students-main { transform: scale(0.488); } }
+@media (max-width: 374px) and (min-width: 350px) { .svcc-dashboard-students-main { transform: scale(0.456); } }
+@media (max-width: 349px) and (min-width: 325px) { .svcc-dashboard-students-main { transform: scale(0.423); } }
+@media (max-width: 324px)                         { .svcc-dashboard-students-main { transform: scale(0.417); } }
+
+/* ── Print ────────────────────────────────────────────────── */
+@media print {
+  .svcc-dashboard-students-day-filter,
+  .svcc-dashboard-students-enrollment-actions { display: none; }
+  .svcc-dashboard-students-container { background: white; padding: 0; }
+}
+
+/* ── Focus / Accessibility ───────────────────────────────── */
+.svcc-dashboard-students-day-dropdown button:focus-visible,
+.svcc-dashboard-students-day-filter-btn:focus-visible,
+.svcc-dashboard-students-view-details-btn:focus-visible,
+.svcc-dashboard-students-contact-btn:focus-visible,
+.svcc-dashboard-students-retry-btn:focus-visible,
+.svcc-dashboard-students-view-all-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}

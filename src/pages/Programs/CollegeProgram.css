@@ -1,0 +1,461 @@
+/* =============================================
+   College Program Page Styles — CollegeProgram.css
+   Classname prefix: svcc-cp__  (highly unique to avoid conflicts)
+   ============================================= */
+
+/* --- Banner / Hero --- */
+.svcc-cp__banner {
+  width: 100%;
+  height: 320px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.svcc-cp__banner-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(130, 18, 20, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.svcc-cp__banner-content {
+  text-align: center;
+  color: #ffffff;
+  padding: 0 20px;
+}
+
+.svcc-cp__banner-title {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 48px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.svcc-cp__banner-subtitle {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  opacity: 0.92;
+  letter-spacing: 0.3px;
+}
+
+/* --- Main Section --- */
+.svcc-cp__section {
+  background-color: #f4f4f4;
+  padding: 50px 20px 70px;
+  min-height: 70vh;
+}
+
+.svcc-cp__container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* --- Breadcrumb --- */
+.svcc-cp__breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  color: #666666;
+  margin-bottom: 28px;
+}
+
+.svcc-cp__breadcrumb-link {
+  color: #d10f0f;
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.2s ease;
+}
+
+.svcc-cp__breadcrumb-link:hover {
+  opacity: 0.75;
+}
+
+.svcc-cp__breadcrumb-sep {
+  color: #aaaaaa;
+}
+
+.svcc-cp__breadcrumb-current {
+  color: #444444;
+  font-weight: 500;
+}
+
+/* =============================================
+   MOBILE CARD SLIDER
+   ============================================= */
+.svcc-cp__mobile-slider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.svcc-cp__mobile-nav-btn {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #d10f0f;
+  background-color: #ffffff;
+  color: #d10f0f;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.svcc-cp__mobile-nav-btn:hover {
+  background-color: #d10f0f;
+  color: #ffffff;
+}
+
+.svcc-cp__mobile-card {
+  flex: 1;
+  background-color: #ffffff;
+  border-radius: 6px;
+  border-top: 4px solid #d10f0f;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.09);
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.svcc-cp__mobile-card-logo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.svcc-cp__mobile-card-name {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1a1a;
+  line-height: 1.4;
+}
+
+.svcc-cp__mobile-card-counter {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 12px;
+  color: #888888;
+  font-weight: 500;
+}
+
+/* =============================================
+   DESKTOP LAYOUT
+   ============================================= */
+.svcc-cp__explorer {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+/* --- Sidebar --- */
+.svcc-cp__sidebar {
+  width: 260px;
+  min-width: 220px;
+  flex-shrink: 0;
+  background-color: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.09);
+  border-top: 4px solid #d10f0f;
+  overflow: hidden;
+  position: sticky;
+  top: 20px;
+}
+
+.svcc-cp__sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 20px 14px;
+  border-bottom: 1px solid #ebebeb;
+}
+
+.svcc-cp__sidebar-header-bar {
+  width: 5px;
+  height: 28px;
+  background-color: #d10f0f;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.svcc-cp__sidebar-title {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+/* --- College List --- */
+.svcc-cp__college-list {
+  list-style: none;
+  padding: 8px 0;
+  margin: 0;
+}
+
+.svcc-cp__college-list li {
+  margin: 0;
+}
+
+.svcc-cp__college-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.18s ease;
+  border-left: 4px solid transparent;
+}
+
+.svcc-cp__college-btn:hover {
+  background-color: #fff5f5;
+  border-left-color: #d10f0f;
+}
+
+.svcc-cp__college-btn--active {
+  background-color: #fff0f0;
+  border-left-color: #d10f0f;
+}
+
+.svcc-cp__college-btn-logo {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  flex-shrink: 0;
+  border-radius: 4px;
+}
+
+.svcc-cp__college-btn-label {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #222222;
+  flex: 1;
+  line-height: 1.4;
+}
+
+.svcc-cp__college-btn--active .svcc-cp__college-btn-label {
+  color: #d10f0f;
+  font-weight: 600;
+}
+
+.svcc-cp__college-btn-arrow {
+  font-size: 18px;
+  color: #cccccc;
+}
+
+.svcc-cp__college-btn--active .svcc-cp__college-btn-arrow {
+  color: #d10f0f;
+}
+
+/* --- Detail Panel --- */
+.svcc-cp__detail-panel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* --- College Header in detail --- */
+.svcc-cp__detail-college-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background-color: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.09);
+  border-top: 4px solid #d10f0f;
+  padding: 24px 28px;
+}
+
+.svcc-cp__detail-college-logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.svcc-cp__detail-college-label {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #d10f0f;
+  margin-bottom: 4px;
+}
+
+.svcc-cp__detail-college-name {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a1a;
+  line-height: 1.3;
+}
+
+/* --- Program Tabs --- */
+.svcc-cp__program-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.svcc-cp__program-tab {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 9px 16px;
+  border-radius: 5px;
+  border: 1.5px solid #ddd;
+  background-color: #ffffff;
+  color: #444444;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  line-height: 1.4;
+}
+
+.svcc-cp__program-tab:hover {
+  border-color: #d10f0f;
+  color: #d10f0f;
+  background-color: #fff5f5;
+}
+
+.svcc-cp__program-tab--active {
+  border-color: #d10f0f;
+  background-color: #d10f0f;
+  color: #ffffff;
+}
+
+.svcc-cp__program-tab--active:hover {
+  background-color: #b80e0e;
+  border-color: #b80e0e;
+  color: #ffffff;
+}
+
+/* --- Program Detail Card --- */
+.svcc-cp__program-card {
+  background-color: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.09);
+  padding: 36px 40px;
+  border-top: 4px solid #d10f0f;
+}
+
+.svcc-cp__program-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.svcc-cp__program-card-header-bar {
+  width: 5px;
+  min-height: 32px;
+  background-color: #d10f0f;
+  border-radius: 3px;
+  flex-shrink: 0;
+  margin-top: 3px;
+}
+
+.svcc-cp__program-card-title {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+/* --- Program Description --- */
+.svcc-cp__program-description {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-left: 19px;
+  border-left: 3px solid #e8e8e8;
+}
+
+.svcc-cp__program-paragraph {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14.5px;
+  color: #444444;
+  line-height: 1.78;
+  margin: 0;
+}
+
+/* =============================================
+   Responsive
+   ============================================= */
+@media (max-width: 900px) {
+  .svcc-cp__explorer {
+    flex-direction: column;
+  }
+
+  .svcc-cp__detail-college-header {
+    padding: 18px 20px;
+  }
+
+  .svcc-cp__detail-college-logo {
+    width: 50px;
+    height: 50px;
+  }
+
+  .svcc-cp__detail-college-name {
+    font-size: 17px;
+  }
+
+  .svcc-cp__program-card {
+    padding: 24px 22px;
+  }
+
+  .svcc-cp__program-card-title {
+    font-size: 15px;
+  }
+
+  .svcc-cp__program-paragraph {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .svcc-cp__banner {
+    height: 200px;
+  }
+
+  .svcc-cp__banner-title {
+    font-size: 24px;
+  }
+
+  .svcc-cp__banner-subtitle {
+    font-size: 13px;
+  }
+
+  .svcc-cp__program-card {
+    padding: 18px 16px;
+  }
+
+  .svcc-cp__program-card-title {
+    font-size: 14px;
+  }
+}

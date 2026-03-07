@@ -154,8 +154,7 @@ const LandingPage = () => {
               </a>
               {showAdmissionDropdown && (
                 <ul className="landing-page-dropdown-menu">
-                  <li><a href="#admission-requirements">Admission Requirements</a></li>
-                  <li><a href="online-application">Online Application</a></li>
+                  <li><a href="admission-requirements">Admission Requirements</a></li>
                 </ul>
               )}
             </li>
@@ -179,25 +178,18 @@ const LandingPage = () => {
               </a>
               {showProgramsDropdown && (
                 <ul className="landing-page-dropdown-menu">
-                  <li><a href="#kinder">Kinder</a></li>
-                  <li><a href="#elementary">Elementary</a></li>
-                  <li><a href="#junior-hs">Junior HS</a></li>
-                  <li><a href="#senior-hs">Senior HS</a></li>
-                  <li><a href="#college">College</a></li>
+                  <li><a href="college-program">College</a></li>
                 </ul>
               )}
             </li>
             <li className="landing-page-nav-item">
-              <a href="#scholarship" className="landing-page-nav-link">Scholarship Program</a>
-            </li>
-            <li className="landing-page-nav-item">
-              <a href="#about" className="landing-page-nav-link">About SVCC</a>
+              <a href="about" className="landing-page-nav-link">About SVCC</a>
             </li>
             <li className="landing-page-nav-item">
               <a href="/login" className="landing-page-nav-link">SVCC Portal</a>
             </li>
             <li className="landing-page-nav-item">
-              <a href="#contact" className="landing-page-nav-link">Contact</a>
+              <a href="contact" className="landing-page-nav-link">Contact</a>
             </li>
           </ul>
         </nav>

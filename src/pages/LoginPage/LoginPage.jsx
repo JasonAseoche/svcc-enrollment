@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import bgsvcc from '../../assets/slide2.jpg';
+import axios from 'axios';
+import bgsvcc from '../../assets/svcc_gate.jpg';
 import SVCCLogo from '../../assets/svcc_logo.png';
 import './LoginPage.css';
 import '../../components/LandingPageLayout/LandingPage.css';
@@ -19,14 +20,6 @@ const LoginPage = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
-  // Hardcoded accounts for demo
-  const demoAccounts = {
-    'admin': { password: '123', role: 'admin', name: 'Admin User' },
-    'student': { password: '123', role: 'student', name: 'Student User' },
-    'head': { password: '123', role: 'program_head', name: 'Program Head User' },
-    'instructor': { password: '123', role: 'instructor', name: 'Instructor User' }
-  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -50,26 +43,58 @@ const LoginPage = () => {
     setLoading(true);
     setError('');
 
-    // Simulate API delay
-    setTimeout(() => {
-      const username = formData.email.toLowerCase().trim();
-      const account = demoAccounts[username];
+    try {
+      const response = await axios.post(
+        'http://localhost/svcc-enrollment/login.php',
+        {
+          email: formData.email,
+          password: formData.password
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
 
-      if (account && account.password === formData.password) {
-        // Create user object
-        const user = {
-          email: username,
-          role: account.role,
-          name: account.name
-        };
-
-        // Store user data in localStorage
-        localStorage.setItem('user', JSON.stringify(user));
-        localStorage.setItem('token', 'demo-token-' + Date.now());
+      if (response.data.success) {
+        // Store user data and token in localStorage
+        const userData = response.data.data.user;
+        const token = response.data.data.token;
+        
+        // Store complete user data
+        localStorage.setItem('user', JSON.stringify(userData));
+        localStorage.setItem('token', token);
         localStorage.setItem('isAuthenticated', 'true');
+        
+        // Store user_id separately for easy access (optional but helpful)
+        localStorage.setItem('user_id', userData.user_id);
+        
+        // Store role-specific IDs if available
+        if (userData.student_number) {
+          localStorage.setItem('student_number', userData.student_number);
+        }
+        if (userData.instructor_id) {
+          localStorage.setItem('instructor_id', userData.instructor_id);
+        }
+        if (userData.program_head_id) {
+          localStorage.setItem('program_head_id', userData.program_head_id);
+        }
 
-        // Redirect based on user role
-        switch (account.role) {
+        console.log('User logged in:', {
+          user_id: userData.user_id,
+          role: userData.role,
+          name: `${userData.firstName} ${userData.lastName}`,
+          email: userData.email
+        });
+
+        // Redirect based on user role and enrollment status
+        const userRole = userData.role;
+        
+        switch (userRole) {
+         case 'superadmin':
+            navigate('/dashboard-superadmin');
+            break;
           case 'admin':
             navigate('/dashboard-admin');
             break;
@@ -80,17 +105,31 @@ const LoginPage = () => {
             navigate('/dashboard-instructor');
             break;
           case 'student':
-            navigate('/dashboard-student');
+            // Check enrollment status for students
+            if (userData.enrollment_status === 'unenrolled') {
+              navigate('/exist-enroll');
+            } else {
+              navigate('/dashboard-student');
+            }
             break;
           default:
             navigate('/');
         }
       } else {
-        setError('Invalid credentials. Use: admin/student/head/instructor with password: 123');
+        setError(response.data.message || 'Login failed');
       }
-      
+    } catch (err) {
+      console.error('Login error:', err);
+      if (err.response) {
+        setError(err.response.data.message || 'Invalid credentials');
+      } else if (err.request) {
+        setError('Server is not responding. Please try again later.');
+      } else {
+        setError('An error occurred. Please try again.');
+      }
+    } finally {
       setLoading(false);
-    }, 800);
+    }
   };
 
   return (
@@ -133,8 +172,7 @@ const LoginPage = () => {
               </a>
               {showAdmissionDropdown && (
                 <ul className="landing-page-dropdown-menu">
-                  <li><a href="#admission-requirements">Admission Requirements</a></li>
-                  <li><a href="online-application">Online Application</a></li>
+                  <li><a href="admission-requirements">Admission Requirements</a></li>
                 </ul>
               )}
             </li>
@@ -158,25 +196,18 @@ const LoginPage = () => {
               </a>
               {showProgramsDropdown && (
                 <ul className="landing-page-dropdown-menu">
-                  <li><a href="#kinder">Kinder</a></li>
-                  <li><a href="#elementary">Elementary</a></li>
-                  <li><a href="#junior-hs">Junior HS</a></li>
-                  <li><a href="#senior-hs">Senior HS</a></li>
-                  <li><a href="#college">College</a></li>
+                  <li><a href="college-program">College</a></li>
                 </ul>
               )}
             </li>
             <li className="landing-page-nav-item">
-              <a href="#scholarship" className="landing-page-nav-link">Scholarship Program</a>
-            </li>
-            <li className="landing-page-nav-item">
-              <a href="#about" className="landing-page-nav-link">About SVCC</a>
+              <a href="about" className="landing-page-nav-link">About SVCC</a>
             </li>
             <li className="landing-page-nav-item">
               <Link to="/login" className="landing-page-nav-link">SVCC Portal</Link>
             </li>
             <li className="landing-page-nav-item">
-              <a href="#contact" className="landing-page-nav-link">Contact</a>
+              <a href="contact" className="landing-page-nav-link">Contact</a>
             </li>
           </ul>
         </nav>
@@ -203,7 +234,7 @@ const LoginPage = () => {
                 <input
                   type="text"
                   name="email"
-                  placeholder="Username (admin/student/head/instructor)"
+                  placeholder="Email or Student Number"
                   className="svcc-login-input"
                   value={formData.email}
                   onChange={handleInputChange}
@@ -215,7 +246,7 @@ const LoginPage = () => {
                 <input
                   type="password"
                   name="password"
-                  placeholder="Password (123)"
+                  placeholder="Password"
                   className="svcc-login-input"
                   value={formData.password}
                   onChange={handleInputChange}
@@ -234,6 +265,9 @@ const LoginPage = () => {
             
             <p className="svcc-login-help-text">
               Having a trouble logging in? <span className="svcc-login-clickable">Click Here</span>
+            </p>
+            <p className="svcc-login-copyright">
+              © 2026 St. Vincent College of Cabuyao. All Right Reserved
             </p>
           </div>
         </div>
